@@ -5,26 +5,6 @@
 #include<string>
 #include<algorithm>
 
-#define RST  "\x1B[0m"
-#define KRED  "\x1B[31m"
-#define KGRN  "\x1B[32m"
-#define KYEL  "\x1B[33m"
-#define KBLU  "\x1B[34m"
-#define KMAG  "\x1B[35m"
-#define KCYN  "\x1B[36m"
-#define KWHT  "\x1B[37m"
-
-#define FRED(x) KRED x RST
-#define FGRN(x) KGRN x RST
-#define FYEL(x) KYEL x RST
-#define FBLU(x) KBLU x RST
-#define FMAG(x) KMAG x RST
-#define FCYN(x) KCYN x RST
-#define FWHT(x) KWHT x RST
-
-#define BOLD(x) "\x1B[1m" x RST
-#define UNDL(x) "\x1B[4m" x RST
-
 using namespace std;
 
 
@@ -39,9 +19,9 @@ struct Vector2 {
 		x = 0; y = 0;
 	}
 
-	int Distance()
+	float Distance()
 	{
-		return (int)sqrt(x * x + y * y);
+		return sqrtf(x * x + y * y);
 	}
 	bool able = true;
 };
@@ -52,7 +32,7 @@ enum ObjLayer {
 };
 
 struct Obj {
-public :
+public:
 	Vector2 start;
 	Vector2 end;
 	bool able;
@@ -61,8 +41,8 @@ public :
 		start = start1;
 		end = end1;
 	};
-	
-	Obj(Vector2 start1, Vector2 end1,ObjLayer laa) {
+
+	Obj(Vector2 start1, Vector2 end1, ObjLayer laa) {
 		start = start1;
 		end = end1;
 		la = laa;
@@ -100,25 +80,25 @@ public:
 	Objs(vector<Vector2> points, ObjLayer laa)
 	{
 		for (int i = 1; i < points.size(); i++) {
-			lines.push_back(Obj(points[i], points[i - 1],laa));
+			lines.push_back(Obj(points[i], points[i - 1], laa));
 		}
-		lines.push_back(Obj(points[0], points[points.size() - 1],laa));
+		lines.push_back(Obj(points[0], points[points.size() - 1], laa));
 	}
 
 	Objs() {};
 };
 
-const std::string reset =	"\033[0m";
-const std::string bold =	"\033[1m";
-const std::string red =		"\033[31m";
-const std::string blue =	"\033[34m";
-const std::string yellow =	"\033[33m";
-const std::string purple =	"\033[35m";
-const std::string cyan =	"\033[36m";
-const std::string green =	"\033[32m";
-const std::string black =	"\033[30m";
-const std::string white =	"\033[37m";
-const std::string underline="\033[4m";
+const std::string reset = "\033[0m";
+const std::string bold = "\033[1m";
+const std::string red = "\033[31m";
+const std::string blue = "\033[34m";
+const std::string yellow = "\033[33m";
+const std::string purple = "\033[35m";
+const std::string cyan = "\033[36m";
+const std::string green = "\033[32m";
+const std::string black = "\033[30m";
+const std::string white = "\033[37m";
+const std::string underline = "\033[4m";
 const std::string g = "\033[32m";
 
 void SetColor(int _textcolor, int _bgcolor)
@@ -135,30 +115,53 @@ void Gotoxy(int x, int y)
 		Cur);
 }
 
-vector<Obj> GameObjs(1);
+float VDistace(Vector2 a, Vector2 b)
+{
+	return sqrtf((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+
+vector<Obj> GameObjs;
 vector<Obj>BillBoards;
 char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
-char PixelsGround[15] = { ' ',' ',' ',' ','-','.','-','.',',','.',',','.','.','.','.'};
-string colors[5] = { "\033[1;33m","\033[1;31m","\033[1;90m","\033[1;32m","\033[1;92m" };
+char PixelsGround[15] = { ' ',' ',' ',' ','-','.','-','.',',','.',',','.','.','.','.' };
+string colors[5] = { "\033[1;33m","\033[1;31m","\033[1;42m","\033[1;32m","\033[1;92m" };
 
 int ming[15][15] =
 {
-{3,3,3,4,3,3,3,3,3,3,3,3,3,3,4},
-{3,3,4,3,3,3,3,3,1,2,3,1,3,3,3},
-{3,1,2,1,3,3,3,1,2,2,2,1,1,1,1},
-{1,1,2,1,1,2,1,2,2,1,0,1,1,2,1},
-{1,2,0,2,1,1,2,1,1,1,0,2,2,0,2},
-{1,1,1,1,1,1,1,1,1,1,1,1,0,1,1},
-{1,1,1,1,1,1,1,1,1,1,1,0,1,1,1},
-{0,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-{1,1,1,1,1,1,1,1,1,1,1,2,1,1,1},
-{1,1,1,1,2,2,1,1,1,1,1,1,2,1,1},
-{0,1,1,0,1,1,1,1,1,0,0,0,0,2,1},
-{0,1,1,0,1,0,0,1,1,0,0,2,0,0,0},
-{1,1,1,0,1,1,1,1,1,2,2,2,1,1,1},
-{0,2,1,1,1,1,1,1,1,1,2,1,1,2,1},
-{1,2,1,1,1,1,1,1,1,1,2,2,0,1,1}
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,3,3,3,3,3,3,0,0,3,0,0,0},
+{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
+{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
+{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
+{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
+{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
+{0,0,0,3,3,3,3,3,3,0,0,3,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,3,0,0,0},
+{0,0,0,0,0,3,3,3,0,0,0,3,0,0,0},
+{0,0,0,0,3,0,0,0,3,0,0,3,0,0,0},
+{0,0,0,3,0,0,0,0,3,0,0,0,0,0,0},
+{0,0,0,3,0,0,0,3,0,0,0,0,0,0,0},
+{0,0,0,0,3,3,3,0,0,0,0,0,0,0,0}
 };
+
+//{
+//	{3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4},
+//	{ 3,3,4,3,3,3,3,3,1,2,3,1,3,3,3 },
+//	{ 3,1,2,1,3,3,3,1,2,2,2,1,1,1,1 },
+//	{ 1,1,2,1,1,2,1,2,2,1,0,1,1,2,1 },
+//	{ 1,2,0,2,1,1,2,1,1,1,0,2,2,0,2 },
+//	{ 1,1,1,1,1,1,1,1,1,1,1,1,0,1,1 },
+//	{ 1,1,1,1,1,1,1,1,1,1,1,0,1,1,1 },
+//	{ 0,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
+//	{ 1,1,1,1,1,1,1,1,1,1,1,2,1,1,1 },
+//	{ 1,1,1,1,2,2,1,1,1,1,1,1,2,1,1 },
+//	{ 0,1,1,0,1,1,1,1,1,0,0,0,0,2,1 },
+//	{ 0,1,1,0,1,0,0,1,1,0,0,2,0,0,0 },
+//	{ 1,1,1,0,1,1,1,1,1,2,2,2,1,1,1 },
+//	{ 0,2,1,1,1,1,1,1,1,1,2,1,1,2,1 },
+//	{ 1,2,1,1,1,1,1,1,1,1,2,2,0,1,1 }
+//};
 
 Vector2 Raycasting(Obj gm, Obj ray)
 {
@@ -180,17 +183,16 @@ Vector2 Raycasting(Obj gm, Obj ray)
 	//ming.x = (start1 - start2) / (lean1 - lean2);
 	//ming.y = ming.x * lean1 + start1;
 	ming.x = ((gm.start.x * gm.end.y - gm.start.y * gm.end.x) * (ray.start.x - ray.end.x) - (ray.start.x * ray.end.y - ray.start.y * ray.end.x) * (gm.start.x - gm.end.x))
-		/((gm.start.x-gm.end.x)*(ray.start.y-ray.end.y)- (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
+		/ ((gm.start.x - gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
 	ming.y = ((gm.start.x * gm.end.y - gm.start.y * gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x * ray.end.y - ray.start.y * ray.end.x) * (gm.start.y - gm.end.y))
 		/ ((gm.start.x - gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
 
 	if (ming.x < (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x < ray.end.x ? ray.start.x : ray.end.x) &&
-		ming.y < (ray.start.y >=ray.end.y ? ray.start.y : ray.end.y) && ming.y >=(ray.start.y < ray.end.y ? ray.start.y : ray.end.y))
+		ming.y < (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y < ray.end.y ? ray.start.y : ray.end.y))
 	{
 		ming.able = true;
 	}
-	ming.x -= ray.start.x;
-	ming.y -= ray.start.y;
+
 	return ming;
 }
 //COORD GetConsoleResolution()
@@ -202,7 +204,7 @@ Vector2 Raycasting(Obj gm, Obj ray)
 //	return COORD{ width,height };
 //}
 
-vector<string> ViewModelArt1 = {{bold},
+vector<string> ViewModelArt1 = { {bold},
 								{"    #############"},
 								{" 000=##############"},
 								{"0000==###############"},
@@ -231,7 +233,7 @@ vector<string> ViewModelArt1 = {{bold},
 								{"                 =============#############"},
 								{"                 =============#############"},
 								{reset}
-};		
+};
 
 vector<string> ViewModelArt12 = { {bold},
 								{"            :            "},
@@ -265,23 +267,23 @@ vector<string> ViewModelArt12 = { {bold},
 								{reset}
 };
 
-void Renderer(int fov,Vector2 player,float rot,int resol)
+void Renderer(int fov, Vector2 player, float rot, int resol)
 {
-	
+
 	//Gotoxy(0, 0);
 	//cout << player.x << "  " << player.y;
-	float *horizontal = new float[fov*2]{ 99, };
-	float *horizontaltx = new float[fov * 2]{ 1, };
+	float* horizontal = new float[fov * 2] { 999, };
+	float* horizontaltx = new float[fov * 2] { 1, };
 	ObjLayer* las = new ObjLayer[fov * 2];
-	for (int i = 0; i < fov*2; i++)
+	for (int i = 0; i < fov * 2; i++)
 	{
 		horizontal[i] = 999;
 	}
 
 	//cout << player.x << player.y;
-	CONSOLE_SCREEN_BUFFER_INFO info;
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE)
-		, &info);
+	//CONSOLE_SCREEN_BUFFER_INFO info;
+	//GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE)
+		//, &info);
 
 	string output = "";
 
@@ -292,71 +294,71 @@ void Renderer(int fov,Vector2 player,float rot,int resol)
 		{
 			for (int ii = -fov; ii < fov; ii++)
 			{
-				
-				/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
-				Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / resol + rot) * horizontal[ii+fov]), player.y + (sinf(((float)ii) * 3.14159f / resol + rot) * horizontal[ii + fov]))));
-				float dis = ray1.Distance();
 
-				float distx = ((GameObjs[i].start.x - ray1.x) * 
-					(GameObjs[i].start.x - ray1.x) + (GameObjs[i].start.y - ray1.y) * (GameObjs[i].start.y - ray1.y))
-					/( (GameObjs[i].start.x - GameObjs[i].end.x) *
-					(GameObjs[i].start.x - GameObjs[i].end.x) + (GameObjs[i].start.y - GameObjs[i].end.y) * (GameObjs[i].start.y - GameObjs[i].end.y));
-				
+				/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
+				Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / resol + rot) * horizontal[ii + fov]), player.y + (sinf(((float)ii) * 3.14159f / resol + rot) * horizontal[ii + fov]))));
+				float dis = VDistace(ray1, player);
+
+
 				bool able = ray1.able;
 				if (able)
 				{
-					horizontal[ii+fov] = dis;
+					if (dis < horizontal[ii + fov])
+						horizontal[ii + fov] = dis;
 					las[ii + fov] = GameObjs[i].la;
+					float distx = VDistace(ray1, GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end) + 1);
+					//Gotoxy(0, 0);
+					//cout << distx;
 					horizontaltx[ii + fov] = distx;
 				}
-				
+
 			}
 		}
 	}
-	
-		Gotoxy(2, 2);
-		
-		//for (int ii =0; ii < 200; ii++) {
-		//	for (int j = 0; j < 50-horizontal[ii]*2; j++)
-		//	{
-		//			if (50 > j && ii< 200)
-		//			{
-		//				//output[j].push_back(' ');
-		//				//output[j][ii + fov]='#';
-		//				//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
-		//				output += '0' + horizontal[ii]/4;
-		//				//Gotoxy(ii,48-j);
-		//				//output[50 - j][ii + fov] = (char)('0' + horizontal[ii] / 5);
-		//				//cout << (int)horizontal[ii];
-		//			}
-		//		
-		//	}
-		//	output += '\n';
-		//}
-		for (int j = 0; j < 75; j++)
-		{
-		for (int ii = 0; ii < fov*2; ii++)
+
+	Gotoxy(2, 2);
+
+	//for (int ii =0; ii < 200; ii++) {
+	//	for (int j = 0; j < 50-horizontal[ii]*2; j++)
+	//	{
+	//			if (50 > j && ii< 200)
+	//			{
+	//				//output[j].push_back(' ');
+	//				//output[j][ii + fov]='#';
+	//				//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
+	//				output += '0' + horizontal[ii]/4;
+	//				//Gotoxy(ii,48-j);
+	//				//output[50 - j][ii + fov] = (char)('0' + horizontal[ii] / 5);
+	//				//cout << (int)horizontal[ii];
+	//			}
+	//		
+	//	}
+	//	output += '\n';
+	//}
+	for (int j = 0; j < 75; j++)
+	{
+		for (int ii = 0; ii < fov * 2; ii++)
 		{
 
-					//output[j].push_back(' ');
-					//output[j][ii + fov]='#';
-					//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
+			//output[j].push_back(' ');
+			//output[j][ii + fov]='#';
+			//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
 
-			if (75 - j <= 75 - horizontal[ii] && j <=55 - horizontal[ii]/2)
+			if (j >= horizontal[ii] && j <= 75 - horizontal[ii])
 			{
-				
 				//if (las[ii] == ObjLayer::Bill)
 				//{
 				//	output += red;
 				//}
-				float size = ((int)horizontal[ii] - (55 - (int)horizontal[ii] / 2));
 
-				
-				output += colors[ming[(int)(horizontaltx[ii]*(15))][2]];//(int)((55 - j)/15*horizontaltx[ii])
+				float size = ((int)horizontal[ii] - (75 - (int)horizontal[ii]));
 
-				if (horizontal[ii]/2 <7) {
+				if (75 - horizontal[ii] * 2 > 0)
+					output.append(colors[ming[(int)(horizontaltx[ii] * 14)][(int)fabs((j - horizontal[ii]) / ((75 - horizontal[ii] * 2)) * 14)]]);//(int)((55 - j)/15*horizontaltx[ii])
 
-					output += Pixels[(int)(horizontal[ii])/2];
+				if (horizontal[ii] / 2 < 7) {
+
+					output += Pixels[(int)(horizontal[ii]) / 2];
 				}
 				else
 				{
@@ -367,33 +369,33 @@ void Renderer(int fov,Vector2 player,float rot,int resol)
 				//{
 				//	output += reset;
 				//}
-			}			
+			}
 			else
 			{
-				output += PixelsGround[j/5];
+				output += PixelsGround[j / 5];
 			}
 		}
 		output += '\n';
 	}
 
-		//for (int ii = 0; ii < fov*2; ii++) 
-		//{
-		//	for (int j = 0; j<45 -horizontal[ii]; j++)
-		//	{
-		//		Gotoxy(ii, 45 - j);
-		//		if (horizontal[ii] / 2 < 7) {
-		//			cout << Pixels[(int)(horizontal[ii]) / 2];
-		//		}
-		//		else
-		//		{
-		//		cout << Pixels[7];
-		//		}
-		//	}
-		//}
+	//for (int ii = 0; ii < fov*2; ii++) 
+	//{
+	//	for (int j = 0; j<45 -horizontal[ii]; j++)
+	//	{
+	//		Gotoxy(ii, 45 - j);
+	//		if (horizontal[ii] / 2 < 7) {
+	//			cout << Pixels[(int)(horizontal[ii]) / 2];
+	//		}
+	//		else
+	//		{
+	//		cout << Pixels[7];
+	//		}
+	//	}
+	//}
 
 
-	//system("cls");
-	for (int i = 0; i < output.size(); i++)
+//system("cls");
+//for (int i = 0; i < output.size(); i++)
 	{
 		cout << output;
 		output.clear();
@@ -441,7 +443,7 @@ int main()
 	cfi.dwFontSize.X = 1;                   // Width of each character in the font
 	cfi.dwFontSize.Y = 10;                  // Height
 	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-	
+
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
@@ -459,26 +461,26 @@ int main()
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE; //Ä¿¼­ Visible TRUE(º¸ÀÓ) FALSE(¼û±è)
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-		vector<Objs> GameObjss;
+	vector<Objs> GameObjss;
 
-		GameObjss.push_back(Objs({ Vector2(-15,15), Vector2(15,15), Vector2(15,-15), Vector2(-15,-15) }));
-		GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
+	GameObjss.push_back(Objs({ Vector2(-15,15), Vector2(15,15), Vector2(15,-15), Vector2(-15,-15) }));
+	//GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
 
-	GameObjs[0] =(Obj(Vector2(2, 8), Vector2(-2, 8)));
-	//GameObjs.push_back(Obj(Vector2(8, 8), Vector2(-15, 8)));
-	//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(-8, 8)));
-	//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(8, -8)));
+//GameObjs[0] =(Obj(Vector2(2, 8), Vector2(-2, 8)));
+//GameObjs.push_back(Obj(Vector2(8, 8), Vector2(-15, 8)));
+//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(-8, 8)));
+//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(8, -8)));
 
-		//vector<Obj4> GameObject4(1);
-	//	GameObject4[0] = Obj4(Vector2(-10,10), Vector2(10,10), Vector2(10,-10), Vector2(-10,-10));
-	//
-	//for (int i = 0; i < GameObject4.size(); i++)
-	//{
-	//	for (int j = 0; j < 4; j++)
-	//	{
-	//		GameObjs.push_back(GameObject4[i].lines[j]);
-	//	}
-	//}
+	//vector<Obj4> GameObject4(1);
+//	GameObject4[0] = Obj4(Vector2(-10,10), Vector2(10,10), Vector2(10,-10), Vector2(-10,-10));
+//
+//for (int i = 0; i < GameObject4.size(); i++)
+//{
+//	for (int j = 0; j < 4; j++)
+//	{
+//		GameObjs.push_back(GameObject4[i].lines[j]);
+//	}
+//}
 
 	for (int i = 0; i < GameObjss.size(); i++)
 	{
@@ -490,23 +492,38 @@ int main()
 	//GameObjs.push_back(Obj(Vector2(7, 30), Vector2(-7,30)));
 	//GameObjs.push_back(Obj(Vector2(-2, 1), Vector2(2, 1)));
 	//GameObjs.push_back(Obj(Vector2(5, 15), Vector2(2, 1)));
+	float speedOrigin = 15;
 	int fov = 140;
 	int resol = 660;
-	float rot = 0,speed =0.08f;
-		Vector2 Playerpos = Vector2(0, 0);
+	float rot = 0, speed = 0;
+	Vector2 Playerpos = Vector2(0, 0);
 	POINT TMPMousePos = { 0,0 };
+	float deltaTime = 0;
+	LARGE_INTEGER Current, last, MING;
+	QueryPerformanceCounter(&Current);
+	QueryPerformanceFrequency(&MING);
+	last = Current;
 	while (true)
 	{
-	Vector2 poss = Vector2(0,0);
-		if (rot > 2*3.141592) {
+		QueryPerformanceCounter(&Current);
+		deltaTime = (float)(Current.QuadPart - last.QuadPart) / static_cast<float>(MING.QuadPart);
+		last = Current;
+
+		Gotoxy(0, 0);
+
+
+		speed = speedOrigin * deltaTime;
+		cout << speed;
+		Vector2 poss = Vector2(0, 0);
+		if (rot > 2 * 3.141592) {
 			rot = 0;
 		}
 		else
-		if (rot < 0) {
-			rot = 2 * 3.141591;
-		}
+			if (rot < 0) {
+				rot = 2 * 3.141591;
+			}
 
-		Renderer(fov, Playerpos,rot,resol);
+		Renderer(fov, Playerpos, rot, resol);
 		if (GetAsyncKeyState('W') & 0x8000)
 		{
 			poss.x += cosf(rot) * speed;
@@ -518,27 +535,27 @@ int main()
 		}
 		if (GetAsyncKeyState('D') & 0x8000)
 		{
-			poss.x += cosf(rot+ 1.7079) * speed;
-			poss.y += sinf(rot+ 1.7079) * speed;
+			poss.x += cosf(rot + 1.7079) * speed;
+			poss.y += sinf(rot + 1.7079) * speed;
 		}
 		if (GetAsyncKeyState('A') & 0x8000) {
-			poss.x += cosf(rot+ 1.7079) * -speed;
-			poss.y += sinf(rot+ 1.7079) * -speed;
+			poss.x += cosf(rot + 1.7079) * -speed;
+			poss.y += sinf(rot + 1.7079) * -speed;
 		}
 
 
 		if (poss.x != 0 || poss.y != 0)
 		{
 			bool able = true;
-		for (int i = 0; i<GameObjs.size(); i++)
-		{
-			if (Raycasting(GameObjs[i], Obj(Playerpos, Vector2(Playerpos.x + poss.x*2, Playerpos.y + poss.y*2))).able)
+			for (int i = 0; i < GameObjs.size(); i++)
 			{
-				able = false;
-				break;
+				if (Raycasting(GameObjs[i], Obj(Playerpos, Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2))).able)
+				{
+					able = false;
+					break;
+				}
 			}
-		}
-			if (able) 
+			if (able)
 			{
 				Playerpos.x += poss.x;
 				Playerpos.y += poss.y;
@@ -561,7 +578,7 @@ int main()
 		POINT p;
 		if (GetCursorPos(&p))
 		{
-			rot += (p.x - 500.0)/1000.0;
+			rot += (p.x - 500.0) / 1000.0;
 
 			TMPMousePos = p;
 
