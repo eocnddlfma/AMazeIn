@@ -356,9 +356,9 @@ void Renderer(int fov, Vector2 player, float rot, int resol)
 				if (75 - horizontal[ii] * 2 > 0)
 					output.append(colors[ming[(int)(horizontaltx[ii] * 14)][(int)fabs((j - horizontal[ii]) / ((75 - horizontal[ii] * 2)) * 14)]]);//(int)((55 - j)/15*horizontaltx[ii])
 
-				if (horizontal[ii] / 2 < 7) {
+				if ((int)(horizontal[ii]/2) < 7) {
 
-					output += Pixels[(int)(horizontal[ii]) / 2];
+					output += Pixels[(int)(horizontal[ii] / 2)];
 				}
 				else
 				{
