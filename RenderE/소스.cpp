@@ -123,7 +123,7 @@ float VDistace(Vector2 a, Vector2 b)
 vector<Obj> GameObjs;
 vector<Obj>BillBoards;
 char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
-char PixelsGround[15] = { ' ',' ',' ',' ','-','.','-','.',',','.',',','.','.','.','.' };
+char PixelsGround[15] = { '~','-','-','-',',',',',',','.','.','.','.','.','.',' ',' ' };
 string colors[5] = { "\033[1;33m","\033[1;31m","\033[1;42m","\033[1;32m","\033[1;92m" };
 
 int ming[15][15] =
@@ -306,9 +306,13 @@ void Renderer(int fov, Vector2 player, float rot, int resol)
 					if (dis < horizontal[ii + fov])
 						horizontal[ii + fov] = dis;
 					las[ii + fov] = GameObjs[i].la;
-					float distx = VDistace(ray1, GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end) + 1);
-					//Gotoxy(0, 0);
-					//cout << distx;
+					float distx = VDistace(ray1, GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
+					if (distx < 0) {
+						distx = 0;
+					}
+					if (distx > 1) {
+						distx = 1;
+					}
 					horizontaltx[ii + fov] = distx;
 				}
 
@@ -462,8 +466,9 @@ int main()
 	cursorInfo.bVisible = FALSE; //Ä¿¼­ Visible TRUE(º¸ÀÓ) FALSE(¼û±è)
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 	vector<Objs> GameObjss;
-
-	GameObjss.push_back(Objs({ Vector2(-15,15), Vector2(15,15), Vector2(15,-15), Vector2(-15,-15) }));
+	//GameObjss.push_back(Objs({Vector2(-15,-15), Vector2(15,-15), Vector2(15,15), Vector2(-15,15)}));
+	GameObjss.push_back(Objs({ Vector2(-12*2,-6 * 2), Vector2(12 * 2,-6 * 2), Vector2(12 * 2,12 * 2), Vector2(6 * 2,12 * 2),Vector2(6 * 2,12 * 2) ,Vector2(6 * 2,24 * 2) ,Vector2(18 * 2,24 * 2)
+		,Vector2(18 * 2,42 * 2),Vector2(-36 * 2,42 * 2) ,Vector2(-36 * 2,24 * 2),Vector2(-2,24 * 2) ,Vector2(-2,12 * 2) ,Vector2(-12 * 2,12 * 2)}));
 	//GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
 
 //GameObjs[0] =(Obj(Vector2(2, 8), Vector2(-2, 8)));
