@@ -46,6 +46,33 @@ public:
 	Obj() {};
 };
 
+struct Billboard {
+public:
+	Vector2 pos;
+	float size;
+	Vector2 dir;
+	float speed;
+	Billboard(Vector2 po, float si)
+	{
+		pos = po;
+		size = si;
+	};
+
+	Billboard(Vector2 po, float si,Vector2 direction,float speed)
+	{
+		pos = po;
+		size = si;
+		dir = direction;
+		this->speed = speed;
+	};
+
+	Obj ConvertObj(float rot) {
+		return Obj(Vector2(pos.x + cos(rot + 1.7079) * size, pos.y + sin(rot + 1.7079) * size),
+			Vector2(pos.x + cos(rot - 1.7079) * size, pos.y + sin(rot - 1.7079) * size));
+	}
+};
+
+
 struct Obj4 {
 public:
 	Obj lines[4];
