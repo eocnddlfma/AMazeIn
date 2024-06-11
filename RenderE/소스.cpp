@@ -6,6 +6,8 @@
 #include<algorithm>
 
 #include "DataStructure.h"
+#include "Render.h"
+#include "Core.h"
 
 using namespace std;
 
@@ -24,24 +26,7 @@ const std::string white = "\033[37m";
 const std::string underline = "\033[4m";
 const std::string g = "\033[32m";
 
-void SetColor(int _textcolor, int _bgcolor)
-{
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE)
-		, (_bgcolor << 4) | _textcolor);
-}
 
-void Gotoxy(int x, int y)
-{
-	// 콘솔 커서 위치를 딱 세팅
-	COORD Cur = { x,y };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),
-		Cur);
-}
-
-float VDistace(Vector2 a, Vector2 b)
-{
-	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-}
 
 vector<Obj> GameObjs;
 vector<Billboard>BillBoardss;
@@ -106,39 +91,6 @@ int Enemy[15][15]=
 //	{ 1,2,1,1,1,1,1,1,1,1,2,2,0,1,1 }
 //};
 
-Vector2 Raycasting(Obj gm, Obj ray)
-{
-	float lean1, lean2, start1, start2;
-	lean1 = (gm.start.y - gm.end.y) / (gm.start.x - gm.end.x);
-	start1 = gm.start.y - lean1 * gm.start.x;
-
-	lean2 = (ray.start.y - ray.end.y) / (ray.start.x - ray.end.x);
-	start2 = ray.start.y - lean2 * ray.start.x;
-
-
-	Vector2 ming{ 1, 1 };
-	ming.able = false;
-	if (lean1 == lean2)
-	{
-		return ming;
-	}
-
-	//ming.x = -(start1 - start2) / (lean1 - lean2);
-	//ming.y = ming.x * lean1 + start1;
-
-	ming.x = ((gm.start.x * gm.end.y - gm.start.y * gm.end.x) * (ray.start.x - ray.end.x) - (ray.start.x * ray.end.y - ray.start.y * ray.end.x) * (gm.start.x - gm.end.x))
-		/ ((gm.start.x - gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
-	ming.y = ((gm.start.x * gm.end.y - gm.start.y * gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x * ray.end.y - ray.start.y * ray.end.x) * (gm.start.y - gm.end.y))
-		/ ((gm.start.x - gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
-
-	if (ming.x <= (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x <= ray.end.x ? ray.start.x : ray.end.x) &&
-		ming.y <= (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y <= ray.end.y ? ray.start.y : ray.end.y))
-	{
-		ming.able = true;
-	}
-
-	return ming;
-}
 //COORD GetConsoleResolution()
 //{
 //
@@ -218,9 +170,9 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 	ObjLayer* las = new ObjLayer[fov * 2];
 	
 	for (int i = 0; i < 3; i++) {
-		horizontal[i] = new float[fov * 2]{999, };
-		horizontaltx[i] = new float[fov * 2] {0, };
-		for (int j = 0; j < fov * 2; j++)
+		horizontal[i] = new float[FOV * 2]{999, };
+		horizontaltx[i] = new float[FOV * 2] {0, };
+		for (int j = 0; j < FOV * 2; j++)
 		{
 			horizontal[i][j] = 999;
 			horizontaltx[i][j] = 0;
@@ -244,36 +196,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		//output += "/n";
 	}
 
-
-	for (int i = 0; i < GameObjs.size(); i++)
-	{
-		if (true)
-		{
-			for (int ii = -fov; ii < fov; ii++)
-			{
-				/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
-				Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / resol + rot) * horizontal[0][ii + fov]), player.y + (sinf(((float)ii) * 3.14159f / resol + rot) * horizontal[0][ii + fov]))));
-				float dis = VDistace(ray1, player);
-
-				bool able = ray1.able;
-				if (able)
-				{
-					if (dis < horizontal[0][ii + fov])
-					horizontal[0][ii + fov] = dis;
-					las[ii + fov] = GameObjs[i].la;
-					float distx = VDistace(ray1, GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
-					if (distx < 0) {
-						distx = 0;
-					}
-					if (distx > 1) {
-						distx = 1;
-					}
-					horizontaltx[0][ii + fov] = distx;
-				}
-
-			}
-		}
-	}
+	renderObjs(FOV, &GameObjs, horizontal, horizontaltx, player, las, rot);
 
 	//여기부터
 	for (int i = 0; i < BillBoardss.size(); i++)
@@ -497,8 +420,8 @@ int main()
 	BillBoardss.push_back(Billboard(Vector2(3,3),2));
 	//BillBoardss.push_back(Billboard(Vector2(-3, -3), 1));
 	float speedOrigin = 15;
-	int fov = 140;
-	int resol = 660;
+	int fov = FOV;
+	int resol = RESOLUTION;
 	float rot = 0, speed = 0;
 	Vector2 Playerpos = Vector2(0, 0);
 	POINT TMPMousePos = { 0,0 };
