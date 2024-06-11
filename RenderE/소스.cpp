@@ -196,7 +196,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		//output += "/n";
 	}
 
-	renderObjs(FOV, &GameObjs, horizontal, horizontaltx, player, las, rot);
+	renderObjs(FOV, GameObjs, horizontal, horizontaltx, player, las, rot);
 
 	//여기부터
 	for (int i = 0; i < BillBoardss.size(); i++)
