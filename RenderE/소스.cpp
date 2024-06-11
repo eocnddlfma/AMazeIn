@@ -45,7 +45,7 @@ float VDistace(Vector2 a, Vector2 b)
 
 vector<Obj> GameObjs;
 vector<Billboard>BillBoardss;
-vector<Billboard>Bullets;
+vector<Billboard*>Bullets;
 char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
 char PixelsGround[15] = { '~','-','-','-',',',',',',','.','.','.','.','.','.',' ',' ' };
 string colors[9] = { bold,red,blue,yellow,purple, cyan ,green,black,white};
@@ -550,13 +550,13 @@ int main()
 			{
 				Billboard ming(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4);
 				BillBoardss.push_back(ming);
-				Bullets.push_back(BillBoardss[BillBoardss.size() - 1]);
+				Bullets.push_back(&BillBoardss[BillBoardss.size() - 1]);
 			}
 		}
 
 		for (int i = 0; i < Bullets.size(); i++) {
-			Bullets[i].pos.x += Bullets[i].dir.x * Bullets[i].speed;
-			Bullets[i].pos.y += Bullets[i].dir.y * Bullets[i].speed;
+			Bullets[i]->pos.x += Bullets[i]->dir.x * Bullets[i]->speed;
+			Bullets[i]->pos.y += Bullets[i]->dir.y * Bullets[i]->speed;
 		}
 
 		if (poss.x != 0 || poss.y != 0)
