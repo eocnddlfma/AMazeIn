@@ -43,8 +43,11 @@ Vector2 Raycasting(Obj gm, Obj ray)
 	ming.y = ((gm.start.x * gm.end.y - gm.start.y * gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x * ray.end.y - ray.start.y * ray.end.x) * (gm.start.y - gm.end.y))
 		/ ((gm.start.x - gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
 
-	if (ming.x <= (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x <= ray.end.x ? ray.start.x : ray.end.x) &&
-		ming.y <= (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y <= ray.end.y ? ray.start.y : ray.end.y))
+	if(VDistace())
+		/*(ming.x <= (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x <= ray.end.x ? ray.start.x : ray.end.x) &&
+		ming.y <= (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y <= ray.end.y ? ray.start.y : ray.end.y)
+		&& (ming.x <= (gm.start.x >= gm.end.x ? gm.start.x : gm.end.x) && ming.x >= (gm.start.x <= gm.end.x ? gm.start.x : gm.end.x) &&
+		ming.y <= (gm.start.y >= gm.end.y ? gm.start.y : gm.end.y) && ming.y >= (gm.start.y <= gm.end.y ? gm.start.y : gm.end.y)))*/
 	{
 		ming.able = true;
 	}

@@ -8,7 +8,6 @@
 #include "DataStructure.h"
 #include "Render.h"
 #include "Core.h"
-#include "MapInitializer.h"
 
 using namespace std;
 
@@ -56,7 +55,7 @@ int ming[15][15] =
 
 int Enemy[15][15]=
 { 
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,1,1,0,0},
@@ -175,7 +174,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		for (int j = 0; j < fov * 2; j++)
 		{
 			horizontal[i][j] = 999;
-			horizontaltx[i][j] = 0;
+			horizontaltx[i][j] = 0-i;
 		}
 	}
 	//CONSOLE_SCREEN_BUFFER_INFO info;
@@ -197,9 +196,48 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 	}
 
 	renderObjs(FOV, GameObjs, horizontal, horizontaltx, player, las, rot);
+	
 
-	renderBillBoards(FOV, BillBoardss, horizontal, horizontaltx, player, las, rot);
+	//¿©±âºÎÅÍ
+	for (int i = 0; i < BillBoardss.size(); i++)
+	{
+		//Vector2 dir(player.x - BillBoardss[i].pos.x, player.y - BillBoardss[i].pos.y);
+		Obj Billbod = BillBoardss[i].ConvertObj(rot);
+		/*Obj Billbod(Vector2(BillBoards[i].pos.x+cos(acos((dir.x + dir.y) / dir.Distance()) + 1.7079) * 2, BillBoards[i].pos.y+ sin(acos((dir.x + dir.y) / dir.Distance()) + 1.7079) * 2),
+			Vector2(BillBoards[i].pos.x+cos(acos((dir.x + dir.y) / dir.Distance()) - 1.7079) * 2, BillBoards[i].pos.y+sin(acos((dir.x + dir.y) / dir.Distance()) - 1.7079) * 2));*/
+			//BillBoards[i].start =
+			for (int ii = -fov; ii < fov; ii++)
+			{
+				/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
+				Vector2 ray1 = Raycasting(Billbod, Obj(Vector2(player.x, player.y), Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / resol + rot) * horizontal[0][ii + fov]), player.y + (sinf(((float)ii) * 3.14159f / resol + rot) * horizontal[0][ii + fov]))));
+				float dis = VDistace(ray1, player);
 
+				bool able = ray1.able;
+
+				if (able)
+				{
+					if (dis < horizontal[1][ii + fov])
+					{
+					//las[ii + fov] = BillBoards[i].la;
+					float distx = VDistace(ray1,Billbod.end) / (VDistace(Billbod.start, Billbod.end));
+					if (distx > 0 && distx < 1)
+						{
+							horizontal[1][ii + fov] = dis;
+							if (distx < 0) {
+								distx = 0;
+							}
+							if (distx > 1) {
+								distx = 1;
+							}
+							horizontaltx[1][ii + fov] = distx;
+						}
+					}
+
+				}
+
+			}
+		
+	}
 	for (int ii = 0;ii < 75; ii++)
 	{
 		for (int z = 0; z < fov * 2; z++)
@@ -214,13 +252,13 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 			{
 				//float size = ((int)horizontal[1][z] / 2 - (75 - (int)horizontal[1][z] / 2));
 
-				if (horizontaltx[1][z] == -1) 
+				if (horizontaltx[1][z] <0) 
 				{
 					outputColor[ii][z] = 0;
 				}
 				else
 				{
-				if (75 - horizontal[0][ii] / 2 > 0)
+				if (75 - horizontal[1][ii] / 2 > 0)
 					outputColor[ii][z] = Enemy[(int)(horizontaltx[1][z] * 14)][(int)fabs((ii - horizontal[1][z] / 2) / ((75 - horizontal[1][z] / 2 * 2)) * 14)];
 				else
 					outputColor[ii][z] = 0;
@@ -232,9 +270,9 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 					continue;
 				}
 
-				if ((int)(horizontal[0][z] / 5 / 2) < 7) {
+				if ((int)(horizontal[1][z] / 5 / 2) < 7) {
 
-					output2[ii][z] = Pixels[(int)(horizontal[0][z] / 2 / 10)];
+					output2[ii][z] = Pixels[(int)(horizontal[1][z] / 2 / 10)];
 				}
 				else
 				{
@@ -353,8 +391,7 @@ int main()
 	cursorInfo.bVisible = FALSE; //Ä¿¼­ Visible TRUE(º¸ÀÓ) FALSE(¼û±è)
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 	vector<Objs> GameObjss;
-	SetMap(&GameObjss);
-	//GameObjss.push_back(Objs({Vector2(-15*2,-15*2), Vector2(15*2,-15*2), Vector2(15*2,15*2), Vector2(-15*2,15*2)}));
+	GameObjss.push_back(Objs({Vector2(-15*2,-15*2), Vector2(15*2,-15*2), Vector2(15*2,15*2), Vector2(-15*2,15*2)}));
 	/*GameObjss.push_back(Objs({ Vector2(-12*2,-6 * 2), Vector2(12 * 2,-6 * 2), Vector2(12 * 2,12 * 2), Vector2(6 * 2,12 * 2),Vector2(6 * 2,12 * 2) ,Vector2(6 * 2,24 * 2) ,Vector2(18 * 2,24 * 2)
 		,Vector2(18 * 2,42 * 2),Vector2(-36 * 2,42 * 2) ,Vector2(-36 * 2,24 * 2),Vector2(-2,24 * 2) ,Vector2(-2,12 * 2) ,Vector2(-12 * 2,12 * 2)}));*/
 	//GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
@@ -384,6 +421,7 @@ int main()
 	}
 
 	BillBoardss.push_back(Billboard(Vector2(3,3),2));
+	BillBoardss.push_back(Billboard(Vector2(7, 7), 2));
 	//BillBoardss.push_back(Billboard(Vector2(-3, -3), 1));
 	float speedOrigin = 15;
 	int fov = 140;

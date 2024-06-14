@@ -16,8 +16,9 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 			bool able = ray1.able;
 			if (able)
 			{
-				if (dis < horizontal[0][ii + fov])
-					horizontal[0][ii + fov] = dis;
+				if (dis < horizontal[0][ii + fov]) {
+
+				horizontal[0][ii + fov] = dis;
 				objectLayer[ii + fov] = GameObjs[i].la;
 				float distx = VDistace(ray1, GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
 				if (distx < 0) {
@@ -27,6 +28,7 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 					distx = 1;
 				}
 				HorizontalTexture[0][ii + fov] = distx;
+				}
 			}
 
 		}
