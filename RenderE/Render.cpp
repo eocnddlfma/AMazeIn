@@ -32,3 +32,37 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 		}
 	}
 }
+
+void renderBillBoards(int fov, std::vector<Billboard> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation)
+{
+	for (int i = 0; i < Billboards.size(); i++) {
+
+		Obj Billbod = Billboards[i].ConvertObj(playerRotation);
+		for (int ii = -fov; ii < fov; ii++)
+		{
+			/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
+			Vector2 ray1 = Raycasting(Billbod, Obj(Vector2(player.x, player.y), Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]), player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))));
+			float dis = VDistace(ray1, player);
+
+			bool able = ray1.able;
+			if (able)
+			{
+				if (dis < horizontal[1][ii + fov])
+					horizontal[1][ii + fov] = dis;
+				//las[ii + fov] = BillBoards[i].la;
+				float distx = VDistace(ray1, Billbod.end) / (VDistace(Billbod.start, Billbod.end));
+				if (distx < 0) {
+					distx = 0;
+				}
+				if (distx > 1) {
+					distx = 1;
+				}
+				HorizontalTexture[1][ii + fov] = distx;
+			}
+			else
+			{
+				HorizontalTexture[1][ii + fov] = -1;
+			}
+		}
+	}
+}

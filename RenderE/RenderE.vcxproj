@@ -129,13 +129,18 @@
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="DataStructure.cpp" />
+    <ClCompile Include="MapInitializer.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="소스.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="DataStructure.h" />
+    <ClInclude Include="MapInitializer.h" />
     <ClInclude Include="Render.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mapData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
