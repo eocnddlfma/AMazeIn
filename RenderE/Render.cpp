@@ -50,20 +50,26 @@ void renderBillBoards(int fov, std::vector<Billboard> Billboards, float** horizo
 			if (able)
 			{
 				if (dis < horizontal[1][ii + fov])
-					horizontal[1][ii + fov] = dis;
+				{
+
+					float distx = VDistace(ray1, Billbod.end) / (VDistace(Billbod.start, Billbod.end));
+					if (distx >= 0 && distx <= 1)
+					{
+						horizontal[1][ii + fov] = dis;
+						if (distx < 0) 
+						{
+							distx = 0;
+						}
+						if (distx > 1) 
+						{
+							distx = 1;
+						}
+
+						HorizontalTexture[1][ii + fov] = distx;
+					}
+				}
 				//las[ii + fov] = BillBoards[i].la;
-				float distx = VDistace(ray1, Billbod.end) / (VDistace(Billbod.start, Billbod.end));
-				if (distx < 0) {
-					distx = 0;
-				}
-				if (distx > 1) {
-					distx = 1;
-				}
-				HorizontalTexture[1][ii + fov] = distx;
-			}
-			else
-			{
-				HorizontalTexture[1][ii + fov] = -1;
+
 			}
 		}
 	}

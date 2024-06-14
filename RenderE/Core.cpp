@@ -43,11 +43,12 @@ Vector2 Raycasting(Obj gm, Obj ray)
 	ming.y = ((gm.start.x * gm.end.y - gm.start.y * gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x * ray.end.y - ray.start.y * ray.end.x) * (gm.start.y - gm.end.y))
 		/ ((gm.start.x - gm.end.x) * (ray.start.y - ray.end.y) - (ray.start.x - ray.end.x) * (gm.start.y - gm.end.y));
 
-	if(VDistace())
-		/*(ming.x <= (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x <= ray.end.x ? ray.start.x : ray.end.x) &&
-		ming.y <= (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y <= ray.end.y ? ray.start.y : ray.end.y)
-		&& (ming.x <= (gm.start.x >= gm.end.x ? gm.start.x : gm.end.x) && ming.x >= (gm.start.x <= gm.end.x ? gm.start.x : gm.end.x) &&
-		ming.y <= (gm.start.y >= gm.end.y ? gm.start.y : gm.end.y) && ming.y >= (gm.start.y <= gm.end.y ? gm.start.y : gm.end.y)))*/
+	if(VDistace(Vector2((gm.start.x + gm.end.x) / 2, (gm.start.y + gm.end.y) / 2), ming) <= VDistace(gm.start, gm.end)/2 && (ming.x <= (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x <= ray.end.x ? ray.start.x : ray.end.x)
+		&& ming.y <= (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y <= ray.end.y ? ray.start.y : ray.end.y)))
+		//(ming.x <= (ray.start.x >= ray.end.x ? ray.start.x : ray.end.x) && ming.x >= (ray.start.x <= ray.end.x ? ray.start.x : ray.end.x) &&
+		//ming.y <= (ray.start.y >= ray.end.y ? ray.start.y : ray.end.y) && ming.y >= (ray.start.y <= ray.end.y ? ray.start.y : ray.end.y)
+		//&& (ming.x-0.1 <= (gm.start.x >= gm.end.x ? gm.start.x : gm.end.x) && ming.x+0.1 >= (gm.start.x <= gm.end.x ? gm.start.x : gm.end.x) &&
+		//ming.y-0.1 <= (gm.start.y >= gm.end.y ? gm.start.y : gm.end.y) && ming.y+0.1 >= (gm.start.y <= gm.end.y ? gm.start.y : gm.end.y))))
 	{
 		ming.able = true;
 	}
