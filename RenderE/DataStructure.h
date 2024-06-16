@@ -30,15 +30,18 @@ public:
 	Vector2 end;
 	bool able;
 	ObjLayer la = ObjLayer::Stru;
-	Obj(Vector2 start1, Vector2 end1) {
+	int textureNum=1;
+	Obj(Vector2 start1, Vector2 end1, int textureNum = 1) {
 		start = start1;
 		end = end1;
+		this->textureNum = textureNum;
 	};
 
-	Obj(Vector2 start1, Vector2 end1, ObjLayer laa) {
+	Obj(Vector2 start1, Vector2 end1, ObjLayer laa, int textureNum = 1) {
 		start = start1;
 		end = end1;
 		la = laa;
+		this->textureNum = textureNum;
 	};
 
 
@@ -48,22 +51,24 @@ public:
 
 struct Billboard {
 public:
+	int textureNum;
 	Vector2 pos;
 	float size;
 	Vector2 dir;
 	float speed;
-	Billboard(Vector2 po, float si)
+	Billboard(Vector2 po, float si, int texture = 2)
 	{
 		pos = po;
 		size = si;
+		textureNum = texture;
 	};
-
-	Billboard(Vector2 po, float si,Vector2 direction,float speed)
+	Billboard(Vector2 po, float si, Vector2 direction, float speed, int texture=2)
 	{
 		pos = po;
 		size = si;
 		dir = direction;
 		this->speed = speed;
+		textureNum = texture;
 	};
 
 	Obj ConvertObj(float rot) {
@@ -88,9 +93,11 @@ public:
 
 struct Objs {
 public:
+	int textureNum;
 	vector<Obj> lines;
-	Objs(vector<Vector2> points)
+	Objs(vector<Vector2> points, int texture)
 	{
+		textureNum = texture;
 		for (int i = 1; i < points.size(); i++) {
 			lines.push_back(Obj(points[i], points[i - 1]));
 		}
