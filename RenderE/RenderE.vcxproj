@@ -129,9 +129,9 @@
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="DataStructure.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapInitializer.cpp" />
     <ClCompile Include="Render.cpp" />
-    <ClCompile Include="소스.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
