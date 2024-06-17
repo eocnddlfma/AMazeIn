@@ -30,13 +30,10 @@ const std::string g = "\033[32m";
 
 vector<Obj> GameObjs;
 vector<Billboard>BillBoardss;
-vector<Billboard*>MovingBillboards;
-vector<Billboard*>EnemyBillboards;
+vector<Billboard*>Bullets;
 char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
 char PixelsGround[15] = { '~','-','-','-',',',',',',','.','.','.','.','.','.',' ',' ' };
 string colors[9] = { bold,red,blue,yellow,purple, cyan ,green,black,white};
-
-#define TextureNum 3
 
 int ming[15][15] =
 {	
@@ -57,8 +54,8 @@ int ming[15][15] =
 {0,0,0,0,3,3,3,0,0,0,0,0,0,0,0}
 };
 
-int Enemy[15][15] =
-{
+int Enemy[15][15]=
+{ 
 {0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
@@ -76,43 +73,6 @@ int Enemy[15][15] =
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
 
-int BulletTexture[15][15] =
-{
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-};
-
-
-int(*GetTextureByNumber(int num))[15]
-{
-	switch (num)
-	{
-	case 1:
-		return ming;
-		break;
-	case 2:
-		return Enemy;
-		break;
-	case 3:
-		return BulletTexture;
-		break;
-	default:
-		break;
-	}
-}
 //{
 //	{3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4},
 //	{ 3,3,4,3,3,3,3,3,1,2,3,1,3,3,3 },
@@ -207,7 +167,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 	float** horizontal = new float*[3];
 	float* horizontal2 = new float[fov * 2] { 999, };
 	float** horizontaltx = new float* [3];
-	float** horizontalTextureNum = new float*[TextureNum+1];
 	ObjLayer* las = new ObjLayer[fov * 2];
 	
 	for (int i = 0; i < 3; i++) {
@@ -217,7 +176,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		{
 			horizontal[i][j] = 999;
 			horizontaltx[i][j] = 0-i;
-			horizontalTextureNum = 0;
 		}
 	}
 	//CONSOLE_SCREEN_BUFFER_INFO info;
@@ -268,7 +226,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 						}
 						else if (75 > horizontal[1][z] / 2)
 						{
-							outputColor[ii][z] = BulletTexture[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (75 - horizontal[1][z] / 2)) * 14)];
+							outputColor[ii][z] = Enemy[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (75 - horizontal[1][z] / 2)) * 14)];
 
 						}
 
@@ -429,8 +387,8 @@ int main()
 		}
 	}
 
-	BillBoardss.push_back(Billboard(Vector2(3,3),2));
-	BillBoardss.push_back(Billboard(Vector2(7, 7), 2));
+	//BillBoardss.push_back(Billboard(Vector2(3,3),2));
+	//BillBoardss.push_back(Billboard(Vector2(7, 7), 2));
 	//BillBoardss.push_back(Billboard(Vector2(-3, -3), 1));
 	float speedOrigin = 15;
 	int fov = 140;
@@ -484,22 +442,15 @@ int main()
 			char a = _getch();
 			if (a == 'f')
 			{
-				Billboard ming(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4, 2);
+				Billboard ming(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 2);
 				BillBoardss.push_back(ming);
-				MovingBillboards.push_back(&BillBoardss[BillBoardss.size() - 1]);
-			}
-			if (a == 'g')
-			{
-				Billboard enemy(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4, 3);
-				BillBoardss.push_back(enemy);
-				MovingBillboards.push_back(&BillBoardss[BillBoardss.size() - 1]);
-				EnemyBillboards.push_back(&BillBoardss[BillBoardss.size() - 1]);
+				Bullets.push_back(&BillBoardss[BillBoardss.size() - 1]);
 			}
 		}
 
-		for (int i = 0; i < MovingBillboards.size(); i++) {
-			MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
-			MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
+		for (int i = 0; i < Bullets.size(); i++) {
+			Bullets[i]->pos.x += Bullets[i]->dir.x * Bullets[i]->speed;
+			Bullets[i]->pos.y += Bullets[i]->dir.y * Bullets[i]->speed;
 		}
 
 		if (poss.x != 0 || poss.y != 0)
