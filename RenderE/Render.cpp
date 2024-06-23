@@ -8,9 +8,10 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 		for (int ii = -fov; ii < fov; ii++)
 		{
 			/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
-			Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y),
+			Obj ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y),
 				Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]),
-					player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))));
+					player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))
+			, ObjLayer::Stru, 1, OBJ_TYPE::FORRAYCASTING));
 			float dis = VDistace(ray1, player);
 
 			bool able = ray1.able;
@@ -35,15 +36,19 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 	}
 }
 
-void renderBillBoards(int fov, std::vector<Billboard> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation)
+void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation)
 {
 	for (int i = 0; i < Billboards.size(); i++) {
 
-		Obj Billbod = Billboards[i].ConvertObj(playerRotation);
+		Obj Billbod = Billboards[i]->ConvertObj(playerRotation);
 		for (int ii = -fov; ii < fov; ii++)
 		{
 			/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
-			Vector2 ray1 = Raycasting(Billbod, Obj(Vector2(player.x, player.y), Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]), player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))));
+			Obj ray1 = Raycasting(Billbod, 
+				Obj(Vector2(player.x, player.y), 
+					Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]), 
+						player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))
+				, ObjLayer::Bill, 1, OBJ_TYPE::FORRAYCASTING));
 			float dis = VDistace(ray1, player);
 
 			bool able = ray1.able;
@@ -74,3 +79,9 @@ void renderBillBoards(int fov, std::vector<Billboard> Billboards, float** horizo
 		}
 	}
 }
+
+void renderMap(int width, int height, int** map)
+{
+
+}
+

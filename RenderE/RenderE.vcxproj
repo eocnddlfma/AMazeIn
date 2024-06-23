@@ -129,6 +129,8 @@
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="DataStructure.cpp" />
+    <ClCompile Include="EnemyGenerator.cpp" />
+    <ClCompile Include="EnemyPathFind.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapInitializer.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -136,6 +138,8 @@
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="DataStructure.h" />
+    <ClInclude Include="EnemyGenerator.h" />
+    <ClInclude Include="EnemyPathFind.h" />
     <ClInclude Include="MapInitializer.h" />
     <ClInclude Include="Render.h" />
   </ItemGroup>

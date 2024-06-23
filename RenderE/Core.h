@@ -10,7 +10,14 @@
 #include<algorithm>
 #include "DataStructure.h"
 
+
+enum class OBJ_TYPE {
+	WALL = '0', KEY, DOOR, ENEMY, FORRAYCASTING
+};
+
 void SetColor(int _textcolor, int _bgcolor);
 void Gotoxy(int x, int y);
 float VDistace(Vector2 a, Vector2 b);
-Vector2 Raycasting(Obj gm, Obj ray);
+Obj Raycasting(Obj gm, Obj ray);
+int(*GetTextureByNumber(int num))[15];
+int** LineToMap(Vector2 playerPos, vector<Obj> Objs, int width, int height);
