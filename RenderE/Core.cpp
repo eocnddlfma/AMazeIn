@@ -30,6 +30,7 @@ Obj Raycasting(Obj gm, Obj ray)
 
 	Obj ming;
 	ming.able = false;
+	ming.textureNum = 0;
 	if (lean1 == lean2)
 	{
 		return ming;
@@ -51,10 +52,14 @@ Obj Raycasting(Obj gm, Obj ray)
 		//ming.y-0.1 <= (gm.start.y >= gm.end.y ? gm.start.y : gm.end.y) && ming.y+0.1 >= (gm.start.y <= gm.end.y ? gm.start.y : gm.end.y))))
 	{
 		ming.able = true;
-		if (gm.ObjType != OBJ_TYPE::FORRAYCASTING)
+		if (gm.ObjType != OBJ_TYPE::FORRAYCASTING) {
 			ming.ObjType = gm.ObjType;
-		else
+			ming.textureNum = gm.textureNum;
+		}
+		else {
 			ming.ObjType = ray.ObjType;
+			ming.textureNum = ray.textureNum;
+		}
 	}
 
 	return ming;
