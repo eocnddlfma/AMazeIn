@@ -204,5 +204,5 @@ int** LineToMap(Vector2 playerPos, vector<Obj> Objs, int width, int height)
 		}
 	}
 
-
+	return map;
 }

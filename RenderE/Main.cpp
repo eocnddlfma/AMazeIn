@@ -7,8 +7,8 @@
 
 #include "DataStructure.h"
 #include "Render.h"
-#include "Core.h"
 #include "mapinitializer.h"
+#include "EnemyGenerator.h"
 
 using namespace std;
 
@@ -29,115 +29,16 @@ const std::string g = "\033[32m";
 
 
 vector<Obj> GameObjs;
+vector<Obj> MapObjs;
 vector<Billboard*>BillBoardss;
-vector<Billboard*>MovingBillboards(0);
-vector<Billboard*>EnemyBillboards(0);
+vector<Billboard*>MovingBillboards;
+vector<Enemy*>EnemyList;
 char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
 char PixelsGround[15] = { '~','-','-','-',',',',',',','.','.','.','.','.','.',' ',' ' };
 string colors[9] = { bold,red,blue,yellow,purple, cyan ,green,black,white};
 
-#define TextureNum 3
+#define ScreenHeight 75
 
-int ming[15][15] =
-{	
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,3,3,3,3,3,3,0,0,3,0,0,0},
-{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
-{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
-{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
-{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
-{0,0,0,3,0,0,0,0,3,0,0,3,0,0,0},
-{0,0,0,3,3,3,3,3,3,0,0,3,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,3,0,0,0},
-{0,0,0,0,0,3,3,3,0,0,0,3,0,0,0},
-{0,0,0,0,3,0,0,0,3,0,0,3,0,0,0},
-{0,0,0,3,0,0,0,0,3,0,0,0,0,0,0},
-{0,0,0,3,0,0,0,3,0,0,0,0,0,0,0},
-{0,0,0,0,3,3,3,0,0,0,0,0,0,0,0}
-};
-
-int Enemy[15][15]=
-{ 
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
-{0,0,0,1,1,1,1,1,0,0,0,1,1,0,0},
-{0,0,0,0,0,0,1,1,0,0,1,1,1,1,0},
-{1,1,1,1,1,1,1,1,0,1,1,1,1,1,1},
-{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-{0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-{1,1,1,1,1,1,1,1,0,1,1,1,1,1,0},
-{1,1,1,1,1,1,1,1,0,0,0,1,1,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
-{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-};
-
-//{
-//	{3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4},
-//	{ 3,3,4,3,3,3,3,3,1,2,3,1,3,3,3 },
-//	{ 3,1,2,1,3,3,3,1,2,2,2,1,1,1,1 },
-//	{ 1,1,2,1,1,2,1,2,2,1,0,1,1,2,1 },
-//	{ 1,2,0,2,1,1,2,1,1,1,0,2,2,0,2 },
-//	{ 1,1,1,1,1,1,1,1,1,1,1,1,0,1,1 },
-//	{ 1,1,1,1,1,1,1,1,1,1,1,0,1,1,1 },
-//	{ 0,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
-//	{ 1,1,1,1,1,1,1,1,1,1,1,2,1,1,1 },
-//	{ 1,1,1,1,2,2,1,1,1,1,1,1,2,1,1 },
-//	{ 0,1,1,0,1,1,1,1,1,0,0,0,0,2,1 },
-//	{ 0,1,1,0,1,0,0,1,1,0,0,2,0,0,0 },
-//	{ 1,1,1,0,1,1,1,1,1,2,2,2,1,1,1 },
-//	{ 0,2,1,1,1,1,1,1,1,1,2,1,1,2,1 },
-//	{ 1,2,1,1,1,1,1,1,1,1,2,2,0,1,1 }
-//};
-int BulletTexture[15][15] =
-{
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,1,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-};
-
-
-int(*GetTextureByNumber(int num))[15]
-	{
-		switch (num)
-		{
-		case 1:
-			return ming;
-			break;
-		case 2:
-			return Enemy;
-			break;
-		case 3:
-			return BulletTexture;
-			break;
-		default:
-			break;
-		}
-	}
-//COORD GetConsoleResolution()
-//{
-//
-//	
-//	short width = info.srWindow.Right - info.srWindow.Left + 1;
-//	short height =  - + 1;
-//	return COORD{ width,height };
-//}
 
 vector<string> ViewModelArt1 = { {bold},
 								{"    #############"},
@@ -206,7 +107,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 	float** horizontal = new float*[3];
 	float* horizontal2 = new float[fov * 2] { 999, };
 	float** horizontaltx = new float* [3];
-	float** horizontalTextureNum = new float* [TextureNum + 1];
 	ObjLayer* las = new ObjLayer[fov * 2];
 	
 	for (int i = 0; i < 3; i++) {
@@ -217,7 +117,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		{
 			horizontal[i][j] = 999;
 			horizontaltx[i][j] = 0-i;
-			horizontalTextureNum = 0;
 		}
 	}
 	//CONSOLE_SCREEN_BUFFER_INFO info;
@@ -256,11 +155,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 				{
 					//float size = ((int)horizontal[1][z] / 2 - (75 - (int)horizontal[1][z] / 2));
 
-					if (ii >= horizontal[1][z] / 2 && ii <= 75 - horizontal[1][z] / 2)
-					{
-						//float size = ((int)horizontal[1][z] / 2 - (75 - (int)horizontal[1][z] / 2));
-
-
 
 						if (horizontaltx[1][z] < 0)
 						{
@@ -268,7 +162,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 						}
 						else if (75 > horizontal[1][z] / 2)
 						{
-							outputColor[ii][z] = BulletTexture[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (75 - horizontal[1][z] / 2)) * 14)];
+							outputColor[ii][z] = GetTextureByNumber(3)[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (75 - horizontal[1][z] / 2)) * 14)];
 
 						}
 
@@ -291,8 +185,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 				//{
 				//	output += reset;
 				//}
-					}
-
 
 				}
 				//output += '\n';
@@ -300,7 +192,8 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		}
 	}
 	//여기까지 승현이가 방금짬
-
+	
+	Gotoxy(2, 2);
 	for (int j = 0; j < 75; j++)
 	{
 		for (int z = 0; z < fov * 2; z++)
@@ -321,7 +214,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 					//float size = ((int)horizontal[z] / 2 - (75 - (int)horizontal[z] / 2));
 
 					if (75 - horizontal[0][j] / 2 > 0)
-						outputColor[j][z] = ming[(int)(horizontaltx[0][z] * 14)][(int)fabs((j - horizontal[0][z] / 2) / ((75 - horizontal[0][z])) * 14)];
+						outputColor[j][z] = GetTextureByNumber(1)[(int)(horizontaltx[0][z] * 14)][(int)fabs((j - horizontal[0][z] / 2) / ((75 - horizontal[0][z])) * 14)];
 					else
 						outputColor[j][z] = 0;
 					//output2[ii].insert(ii,colors[ming[(int)(horizontaltx[0][ii] * 14)][(int)fabs((j - horizontal[0][ii]/2) / ((75 - horizontal[0][ii]/2 * 2)) * 14)]]);//(int)((55 - j)/15*horizontaltx[ii])
@@ -347,7 +240,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 			}
 		}
 	}
-	Gotoxy(0, 0);
+
 	string output = "";
 	for(int i =0; i<75; i++)
 	{
@@ -360,8 +253,9 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		output += '\n';
 	}
 	cout << output;
+	cout << "\n" << player.x << " " << player.y;
 	//output.clear();
-
+	
 	for (int i = 0; i < 3; i++) {
 		delete[] horizontal[i];
 	}
@@ -381,7 +275,6 @@ int main()
 	cfi.dwFontSize.Y = 10;                  // Height
 	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 
-	MovingBillboards.clear();
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
@@ -399,8 +292,7 @@ int main()
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE; //커서 Visible TRUE(보임) FALSE(숨김)
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-	vector<Objs> GameObjss;
-	SetMap(&GameObjss);
+	SetMap(&MapObjs);
 	/*GameObjss.push_back(Objs({ Vector2(-12*2,-6 * 2), Vector2(12 * 2,-6 * 2), Vector2(12 * 2,12 * 2), Vector2(6 * 2,12 * 2),Vector2(6 * 2,12 * 2) ,Vector2(6 * 2,24 * 2) ,Vector2(18 * 2,24 * 2)
 		,Vector2(18 * 2,42 * 2),Vector2(-36 * 2,42 * 2) ,Vector2(-36 * 2,24 * 2),Vector2(-2,24 * 2) ,Vector2(-2,12 * 2) ,Vector2(-12 * 2,12 * 2)}));*/
 	//GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
@@ -421,12 +313,9 @@ int main()
 //	}
 //}
 
-	for (int i = 0; i < GameObjss.size(); i++)
+	for (int i = 0; i < MapObjs.size(); i++)
 	{
-		for (int j = 0; j < GameObjss[i].lines.size(); j++)
-		{
-			GameObjs.push_back(GameObjss[i].lines[j]);
-		}
+		GameObjs.push_back(MapObjs[i]);
 	}
 
 	//BillBoardss.push_back(Billboard(Vector2(3,3),2));
@@ -484,25 +373,38 @@ int main()
 			char a = _getch();
 			if (a == 'f')
 			{
-				Billboard* b = new Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 1.1f, 2);
-				BillBoardss.push_back(b);
-				MovingBillboards.push_back(b);
+				Billboard* ming = new Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 2, OBJ_TYPE::ENEMY);
+				BillBoardss.push_back(ming);				
+				MovingBillboards.push_back(ming);
 			}
 			if (a == 'g')
 			{
-				
-				BillBoardss.push_back(Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4f, 3));
-				MovingBillboards.push_back(&BillBoardss.back());
-				EnemyBillboards.push_back(&BillBoardss.back());
+				//GenerateEnemy(MapObjs[0], MapObjs[0].start, 1, EnemyList);
+				/*Enemy enemy(Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4, 3), 5, 1);
+				BillBoardss.push_back(enemy.render);
+				EnemyList.push_back(&enemy);*/
 			}
 		}
 
 		for (int i = 0; i < MovingBillboards.size(); i++) {
-
-			//(*MovingBillboards[i]).pos.x += (*MovingBillboards[i]).dir.x * (*MovingBillboards[i]).speed;
-			//(*MovingBillboards[i]).pos.y += (*MovingBillboards[i]).dir.y * (*MovingBillboards[i]).speed;
 			MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
 			MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
+		}
+		//적 이동 방향 확인후 이동하는 스크립트
+		for (int i = 0; i < EnemyList.size(); i++) {
+			Vector2 direction = (Playerpos - EnemyList[i]->render.pos);
+			int distance = direction.Distance();
+			direction = Vector2(direction.x / direction.Distance(), direction.y / direction.Distance());
+			EnemyList[i]->render.dir = Vector2(direction.x, direction.y);
+			Obj ray1 = Raycasting(Obj(EnemyList[i]->render.pos, EnemyList[i]->render.pos + EnemyList[i]->render.dir),
+				Obj(Vector2(Playerpos.x, Playerpos.y), Vector2(Playerpos.x + rot, Playerpos.y + rot)));
+			if (ray1.able) {
+				EnemyList[i]->render.pos.x += EnemyList[i]->render.dir.x * EnemyList[i]->render.speed;
+				EnemyList[i]->render.pos.y += EnemyList[i]->render.dir.y * EnemyList[i]->render.speed;
+			}
+			else {
+				//적과 닿음.
+			}
 		}
 
 		if (poss.x != 0 || poss.y != 0)
@@ -518,8 +420,10 @@ int main()
 			}
 			for (int i = 0; i < BillBoardss.size(); i++)
 			{
-				Obj Billbod = BillBoardss[i].ConvertObj(rot);
-				if (Raycasting(Billbod, Obj(Playerpos, Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2))).able)
+				Obj Billbod = BillBoardss[i]->ConvertObj(rot);
+				if (Raycasting(Billbod, Obj(Playerpos, 
+					Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2), 
+					ObjLayer::Bill)).able)
 				{
 					able = false;
 					break;

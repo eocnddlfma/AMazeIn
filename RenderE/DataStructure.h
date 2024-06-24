@@ -2,12 +2,16 @@
 #include<vector>
 using std::vector;
 
+enum class OBJ_TYPE {
+	WALL = '0', KEY, DOOR, ENEMY, FORRAYCASTING
+};
 enum ObjLayer {
 	Stru,
 	Bill
 };
 
 struct Vector2 {
+public:
 	float x = 0; float y = 0;
 	Vector2(float x1, float y1) {
 		x = x1; y = y1;
@@ -21,98 +25,109 @@ struct Vector2 {
 	{
 		return sqrtf(x * x + y * y);
 	}
-	bool able = true;
+	bool able;
+
+	Vector2 operator+(const Vector2 v)
+	{
+		return Vector2(x + v.x, y + v.y);
+	}
+	Vector2 operator-(const Vector2 v)
+	{
+		float bigx, smallx;
+		float bigy, smally;
+
+		if (v.x > x) {
+			bigx = v.x;
+			smallx = x;
+		}
+		else {
+			bigx = x;
+			smallx = v.x;
+		}
+		if (v.y > y) {
+			bigy = v.y;
+			smally = y;
+		}
+		else {
+			bigy = y;
+			smally = v.y;
+		}
+
+
+		return Vector2(bigx - smallx, bigy - smally);
+	}
 };
 
 struct Obj {
 public:
 	Vector2 start;
 	Vector2 end;
-	bool able = false;
-	ObjLayer la = ObjLayer::Stru;
-	int textureNum=1;
-	Obj(Vector2 start1, Vector2 end1, int textureNum = 1) {
-		start = start1;
-		end = end1;
-		this->textureNum = textureNum;
-	};
+	bool able;
+	ObjLayer la;
+	int textureNum;
+	OBJ_TYPE ObjType;
 
-	Obj(Vector2 start1, Vector2 end1, ObjLayer laa, int textureNum = 1) {
+	Obj(Vector2 start1, Vector2 end1, int textureNum=0, ObjLayer laa = ObjLayer::Stru, OBJ_TYPE type = OBJ_TYPE::FORRAYCASTING) {
 		start = start1;
 		end = end1;
 		la = laa;
 		this->textureNum = textureNum;
+		ObjType = type;
 	};
-
-
-
 	Obj() {};
+
+	Vector2 ConvertVector2() {
+		return start;
+	}
 };
 
-struct Billboard {
+class Billboard {
 public:
 	Vector2 pos;
 	float size;
 	Vector2 dir;
 	float speed;
 	int textureNum;
-public:
-	Billboard(Vector2 po, float si, int texture)
-	{
-		pos = po;
-		size = si;
-		textureNum = texture;
-	};
-	Billboard(Vector2 po, float si, Vector2 direction, float speed, int texture)
+	OBJ_TYPE ObjType;
+
+	Billboard(Vector2 po, float si, Vector2 direction, float speed, OBJ_TYPE type, int texture = 2)
 	{
 		pos = po;
 		size = si;
 		dir = direction;
 		this->speed = speed;
+		ObjType = type;
 		textureNum = texture;
 	};
-
+	Billboard() {};
 
 	Obj ConvertObj(float rot) {
 		return Obj(Vector2(pos.x + cos(rot + 1.7079) * size, pos.y + sin(rot + 1.7079) * size),
-			Vector2(pos.x + cos(rot - 1.7079) * size, pos.y + sin(rot - 1.7079) * size));
+			Vector2(pos.x + cos(rot - 1.7079) * size, pos.y + sin(rot - 1.7079) * size),
+			textureNum, ObjLayer::Bill,  ObjType);
+	}
+
+	void DeleteThis()
+	{
+		delete this;
 	}
 };
 
-
-struct Obj4 {
+class Enemy {
 public:
-	Obj lines[4];
+	Billboard render;
+	int currentHp;
+	int maxHp;
+	float attackCooltime;
+	float currentattacktime;
 
-	Obj4(Vector2 r, Vector2 ¤¡, Vector2 L, Vector2 j) {
-		lines[0] = Obj(r, ¤¡);
-		lines[1] = Obj(j, ¤¡);
-		lines[2] = Obj(L, j);
-		lines[3] = Obj(r, L);
-	}
-	Obj4() {};
-};
-
-struct Objs {
-public:
-	int textureNum;
-	vector<Obj> lines;
-	Objs(vector<Vector2> points, int texture)
+	Enemy(Billboard billboard, int maxhp, float attackcooltime)
 	{
-		textureNum = texture;
-		for (int i = 1; i < points.size(); i++) {
-			lines.push_back(Obj(points[i], points[i - 1]));
-		}
-		lines.push_back(Obj(points[0], points[points.size() - 1]));
+		render = billboard;
+		maxHp = maxhp;
+		currentHp = maxhp;
+		attackCooltime = attackcooltime;
 	}
 
-	Objs(vector<Vector2> points, ObjLayer laa)
-	{
-		for (int i = 1; i < points.size(); i++) {
-			lines.push_back(Obj(points[i], points[i - 1], laa));
-		}
-		lines.push_back(Obj(points[0], points[points.size() - 1], laa));
-	}
 
-	Objs() {};
 };
