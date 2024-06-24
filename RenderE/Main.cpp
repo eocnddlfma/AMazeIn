@@ -7,7 +7,6 @@
 
 #include "DataStructure.h"
 #include "Render.h"
-#include "Core.h"
 #include "mapinitializer.h"
 #include "EnemyGenerator.h"
 
@@ -254,8 +253,9 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		output += '\n';
 	}
 	cout << output;
+	cout << "\n" << player.x << " " << player.y;
 	//output.clear();
-
+	
 	for (int i = 0; i < 3; i++) {
 		delete[] horizontal[i];
 	}
@@ -373,7 +373,7 @@ int main()
 			char a = _getch();
 			if (a == 'f')
 			{
-				Billboard* ming = new Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 2);
+				Billboard* ming = new Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 2, OBJ_TYPE::ENEMY);
 				BillBoardss.push_back(ming);				
 				MovingBillboards.push_back(ming);
 			}
@@ -421,7 +421,9 @@ int main()
 			for (int i = 0; i < BillBoardss.size(); i++)
 			{
 				Obj Billbod = BillBoardss[i]->ConvertObj(rot);
-				if (Raycasting(Billbod, Obj(Playerpos, Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2), ObjLayer::Bill, 3, OBJ_TYPE::FORRAYCASTING)).able)
+				if (Raycasting(Billbod, Obj(Playerpos, 
+					Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2), 
+					ObjLayer::Bill)).able)
 				{
 					able = false;
 					break;

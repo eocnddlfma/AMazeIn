@@ -1,8 +1,10 @@
 #pragma once
 #include<vector>
-#include "Core.h"
 using std::vector;
 
+enum class OBJ_TYPE {
+	WALL = '0', KEY, DOOR, ENEMY, FORRAYCASTING
+};
 enum ObjLayer {
 	Stru,
 	Bill
@@ -65,7 +67,7 @@ public:
 	int textureNum;
 	OBJ_TYPE ObjType;
 
-	Obj(Vector2 start1, Vector2 end1, ObjLayer laa = ObjLayer::Stru, int textureNum, OBJ_TYPE type = OBJ_TYPE::FORRAYCASTING) {
+	Obj(Vector2 start1, Vector2 end1, int textureNum=0, ObjLayer laa = ObjLayer::Stru, OBJ_TYPE type = OBJ_TYPE::FORRAYCASTING) {
 		start = start1;
 		end = end1;
 		la = laa;
@@ -73,6 +75,10 @@ public:
 		ObjType = type;
 	};
 	Obj() {};
+
+	Vector2 ConvertVector2() {
+		return start;
+	}
 };
 
 class Billboard {
@@ -84,21 +90,21 @@ public:
 	int textureNum;
 	OBJ_TYPE ObjType;
 
-	Billboard(Vector2 po, float si, Vector2 direction, float speed, int texture=2, OBJ_TYPE type)
+	Billboard(Vector2 po, float si, Vector2 direction, float speed, OBJ_TYPE type, int texture = 2)
 	{
 		pos = po;
 		size = si;
 		dir = direction;
 		this->speed = speed;
-		textureNum = texture;
 		ObjType = type;
+		textureNum = texture;
 	};
 	Billboard() {};
 
 	Obj ConvertObj(float rot) {
 		return Obj(Vector2(pos.x + cos(rot + 1.7079) * size, pos.y + sin(rot + 1.7079) * size),
 			Vector2(pos.x + cos(rot - 1.7079) * size, pos.y + sin(rot - 1.7079) * size),
-			ObjLayer::Bill, textureNum, ObjType);
+			textureNum, ObjLayer::Bill,  ObjType);
 	}
 
 	void DeleteThis()

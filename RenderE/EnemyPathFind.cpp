@@ -17,7 +17,7 @@ bool IsStraightAble(std::vector<Obj> GameObjs, Vector2 playerPos, Vector2 EnemyP
 
 	for (int i = 0; i < GameObjs.size(); i++)
 	{
-		Obj ray1 = Raycasting(GameObjs[i], Obj(playerPos, EnemyPos, ObjLayer::Stru, 1, OBJ_TYPE::FORRAYCASTING));
+		Obj ray1 = Raycasting(GameObjs[i], Obj(playerPos, EnemyPos));
 		if (ray1.able)
 			hasObstacle = true;
 	}

@@ -1,6 +1,6 @@
 #include "Render.h"
 #include "Core.h"
-
+#include <iostream>
 void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* objectLayer, float playerRotation)
 {
 	for (int i = 0; i < GameObjs.size(); i++)
@@ -11,9 +11,10 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 			Obj ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y),
 				Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]),
 					player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))
-			, ObjLayer::Stru, 1, OBJ_TYPE::FORRAYCASTING));
-			float dis = VDistace(ray1, player);
-
+			, 1, ObjLayer::Stru, OBJ_TYPE::FORRAYCASTING));
+			float dis = VDistace(ray1.ConvertVector2(), player);
+			//Gotoxy(2, 2);
+			//std::cout << dis;	
 			bool able = ray1.able;
 			if (able)
 			{
@@ -21,7 +22,7 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 
 				horizontal[0][ii + fov] = dis;
 				objectLayer[ii + fov] = GameObjs[i].la;
-				float distx = VDistace(ray1, GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
+				float distx = VDistace(ray1.ConvertVector2(), GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
 				if (distx < 0) {
 					distx = 0;
 				}
@@ -48,8 +49,8 @@ void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horiz
 				Obj(Vector2(player.x, player.y), 
 					Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]), 
 						player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))
-				, ObjLayer::Bill, 1, OBJ_TYPE::FORRAYCASTING));
-			float dis = VDistace(ray1, player);
+				,ObjLayer::Bill));
+			float dis = VDistace(ray1.ConvertVector2(), player);
 
 			bool able = ray1.able;
 			if (able)
@@ -57,7 +58,7 @@ void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horiz
 				if (dis < horizontal[1][ii + fov])
 				{
 
-					float distx = VDistace(ray1, Billbod.end) / (VDistace(Billbod.start, Billbod.end));
+					float distx = VDistace(ray1.ConvertVector2(), Billbod.end) / (VDistace(Billbod.start, Billbod.end));
 					if (distx >= 0 && distx <= 1)
 					{
 						horizontal[1][ii + fov] = dis;

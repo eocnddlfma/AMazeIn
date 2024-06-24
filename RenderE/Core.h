@@ -8,12 +8,8 @@
 #include<vector>
 #include<string>
 #include<algorithm>
+
 #include "DataStructure.h"
-
-
-enum class OBJ_TYPE {
-	WALL = '0', KEY, DOOR, ENEMY, FORRAYCASTING
-};
 
 void SetColor(int _textcolor, int _bgcolor);
 void Gotoxy(int x, int y);
