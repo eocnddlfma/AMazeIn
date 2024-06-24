@@ -10,16 +10,15 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 			/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/
 			Obj ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y),
 				Vector2(player.x + (cosf((float)((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]),
-					player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))
-			, 1, ObjLayer::Stru, OBJ_TYPE::FORRAYCASTING));
+					player.y + (sinf(((float)ii) * 3.14159f / RESOLUTION + playerRotation) * horizontal[0][ii + fov]))));
 			float dis = VDistace(ray1.ConvertVector2(), player);
-			//Gotoxy(2, 2);
+
 			bool able = ray1.able;
 			if (able)
 			{
 				if (dis < horizontal[0][ii + fov]) {
 					horizontal[0][ii + fov] = dis;
-					std::cout << " distance:" << dis << "\n";
+					std::cout << " distance:" << dis << " obj: " << ray1.ObjType << "\n";
 					//std::cout <<  "distancex: " << distx << " distance:" << dis <<"\n";
 					objectLayer[ii + fov] = GameObjs[i].la;
 					float distx = VDistace(ray1.ConvertVector2(), GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));

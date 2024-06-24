@@ -3,8 +3,32 @@
 using std::vector;
 
 enum class OBJ_TYPE {
-	WALL = '0', KEY, DOOR, ENEMY, FORRAYCASTING
+	WALL, KEY, DOOR, ENEMY, FORRAYCASTING
 };
+
+std::string ObjectTypeToString(OBJ_TYPE type)
+{
+	switch (type)
+	{
+	case OBJ_TYPE::WALL:
+		return "WALL";
+		break;
+	case OBJ_TYPE::KEY:
+		return "KEY";
+		break;
+	case OBJ_TYPE::DOOR:
+		return "DOOR";
+		break;
+	case OBJ_TYPE::ENEMY:
+		return "ENEMY";
+		break;
+	case OBJ_TYPE::FORRAYCASTING:
+		return "FORRAYCASTING";
+		break;
+	default:
+		break;
+	}
+}
 enum ObjLayer {
 	Stru,
 	Bill
