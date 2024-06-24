@@ -15,6 +15,12 @@ void Gotoxy(int x, int y)
 
 float VDistace(Vector2 a, Vector2 b)
 {
+	if (a.x == 0.0f && b.x == 0.0f && a.y == 0.0f && b.y == 0.0f)
+		return 0;
+	if(a.x == 0.0f && b.x == 0.0f)
+		return sqrt((a.y - b.y) * (a.y - b.y));
+	if(a.y == 0.0f && b.y == 0.0f)
+		return sqrt((a.x - b.x) * (a.x - b.x));
 	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 

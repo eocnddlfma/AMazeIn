@@ -1,6 +1,7 @@
 #pragma once
 #define FOV 140
 #define RESOLUTION 660
+#define ScreenHeight 75
 
 #include<iostream>
 #include "Windows.h"

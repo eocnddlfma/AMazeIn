@@ -13,19 +13,19 @@ enum ObjLayer {
 struct Vector2 {
 public:
 	float x = 0; float y = 0;
-	Vector2(float x1, float y1) {
-		x = x1; y = y1;
+	bool able;
+	Vector2(float x1, float y1, bool able = false) {
+		x = x1; y = y1; this->able = able;
 	}
 
 	Vector2() {
-		x = 0; y = 0;
+		x = 0; y = 0; able = false;
 	}
 
 	float Distance()
 	{
 		return sqrtf(x * x + y * y);
 	}
-	bool able;
 
 	Vector2 operator+(const Vector2 v)
 	{
@@ -77,7 +77,7 @@ public:
 	Obj() {};
 
 	Vector2 ConvertVector2() {
-		return start;
+		return Vector2((start.x + end.x) / 2, (start.y + end.y) / 2);
 	}
 };
 

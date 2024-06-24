@@ -14,22 +14,22 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 			, 1, ObjLayer::Stru, OBJ_TYPE::FORRAYCASTING));
 			float dis = VDistace(ray1.ConvertVector2(), player);
 			//Gotoxy(2, 2);
-			//std::cout << dis;	
 			bool able = ray1.able;
 			if (able)
 			{
 				if (dis < horizontal[0][ii + fov]) {
-
-				horizontal[0][ii + fov] = dis;
-				objectLayer[ii + fov] = GameObjs[i].la;
-				float distx = VDistace(ray1.ConvertVector2(), GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
-				if (distx < 0) {
-					distx = 0;
-				}
-				if (distx > 1) {
-					distx = 1;
-				}
-				HorizontalTexture[0][ii + fov] = distx;
+					horizontal[0][ii + fov] = dis;
+					std::cout << " distance:" << dis << "\n";
+					//std::cout <<  "distancex: " << distx << " distance:" << dis <<"\n";
+					objectLayer[ii + fov] = GameObjs[i].la;
+					float distx = VDistace(ray1.ConvertVector2(), GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
+					if (distx < 0) {
+						distx = 0;
+					}
+					if (distx > 1) {
+						distx = 1;
+					}
+					HorizontalTexture[0][ii + fov] = distx;
 				}
 			}
 
