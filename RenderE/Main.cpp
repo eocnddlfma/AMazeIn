@@ -1,18 +1,13 @@
-#include<iostream>
-#include "Windows.h"
-#include"conio.h"
-#include<vector>
-#include<string>
 #include<algorithm>
 
-#include "DataStructure.h"
 #include "Render.h"
 #include "mapinitializer.h"
+#include "ConsoleDoubleBuffer.h"
 #include "EnemyGenerator.h"
+#include "EnemyPathFind.h"
 
 using namespace std;
 
-#
 const std::string reset = "\033[0m";
 const std::string bold = "\033[1m";
 const std::string red = "\033[31m";
@@ -133,6 +128,58 @@ void Input(Vector2* poss, Vector2* Playerpos, float rot, float speed)
 			/*Enemy enemy(Billboard(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4, 3), 5, 1);
 			BillBoardss.push_back(enemy.render);
 			EnemyList.push_back(&enemy);*/
+		}
+	}
+}
+
+void Update(Vector2* Playerpos, Vector2* poss, float rot) {
+	for (int i = 0; i < MovingBillboards.size(); i++) {
+		MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
+		MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
+	}
+	//적 이동 방향 확인후 이동하는 스크립트
+	for (int i = 0; i < EnemyList.size(); i++) {
+		Vector2 direction = (*Playerpos - EnemyList[i]->render.pos);
+		int distance = direction.Distance();
+		direction = Vector2(direction.x / direction.Distance(), direction.y / direction.Distance());
+		EnemyList[i]->render.dir = Vector2(direction.x, direction.y);
+		Obj ray1 = Raycasting(Obj(EnemyList[i]->render.pos, EnemyList[i]->render.pos + EnemyList[i]->render.dir),
+			Obj(Vector2(Playerpos->x, Playerpos->y), Vector2(Playerpos->x + rot, Playerpos->y + rot)));
+		if (ray1.able) {
+			EnemyList[i]->render.pos.x += EnemyList[i]->render.dir.x * EnemyList[i]->render.speed;
+			EnemyList[i]->render.pos.y += EnemyList[i]->render.dir.y * EnemyList[i]->render.speed;
+		}
+		else {
+			//적과 닿음.
+		}
+	}
+
+	if (poss->x != 0 || poss->y != 0)
+	{
+		bool able = true;
+		for (int i = 0; i < GameObjs.size(); i++)
+		{
+			if (Raycasting(GameObjs[i], Obj(*Playerpos, Vector2(Playerpos->x + poss->x * 2, Playerpos->y + poss->y * 2))).able)
+			{
+				able = false;
+				break;
+			}
+		}
+		for (int i = 0; i < BillBoardss.size(); i++)
+		{
+			Obj Billbod = BillBoardss[i]->ConvertObj(rot);
+			if (Raycasting(Billbod, Obj(*Playerpos,
+				Vector2(Playerpos->x + poss->x * 2, Playerpos->y + poss->y * 2),
+				ObjLayer::Bill)).able)
+			{
+				able = false;
+				break;
+			}
+		}
+		if (able)
+		{
+			Playerpos->x += poss->x;
+			Playerpos->y += poss->y;
 		}
 	}
 }
@@ -288,6 +335,7 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 		output += '\n';
 	}
 	//cout << output;
+	RenderConsole(output);
 	//cout << "\n" << player.x << " " << player.y;
 	//output.clear();
 	
@@ -297,56 +345,14 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 	delete horizontal;
 }
 
-void Update(Vector2* Playerpos, Vector2* poss, float rot) {
-	for (int i = 0; i < MovingBillboards.size(); i++) {
-		MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
-		MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
-	}
-	//적 이동 방향 확인후 이동하는 스크립트
-	for (int i = 0; i < EnemyList.size(); i++) {
-		Vector2 direction = (*Playerpos - EnemyList[i]->render.pos);
-		int distance = direction.Distance();
-		direction = Vector2(direction.x / direction.Distance(), direction.y / direction.Distance());
-		EnemyList[i]->render.dir = Vector2(direction.x, direction.y);
-		Obj ray1 = Raycasting(Obj(EnemyList[i]->render.pos, EnemyList[i]->render.pos + EnemyList[i]->render.dir),
-			Obj(Vector2(Playerpos->x, Playerpos->y), Vector2(Playerpos->x + rot, Playerpos->y + rot)));
-		if (ray1.able) {
-			EnemyList[i]->render.pos.x += EnemyList[i]->render.dir.x * EnemyList[i]->render.speed;
-			EnemyList[i]->render.pos.y += EnemyList[i]->render.dir.y * EnemyList[i]->render.speed;
-		}
-		else {
-			//적과 닿음.
-		}
-	}
+void Init()
+{
+	InitConsoleBuffer();
+}
 
-	if (poss->x != 0 || poss->y != 0)
-	{
-		bool able = true;
-		for (int i = 0; i < GameObjs.size(); i++)
-		{
-			if (Raycasting(GameObjs[i], Obj(*Playerpos, Vector2(Playerpos->x + poss->x * 2, Playerpos->y + poss->y * 2))).able)
-			{
-				able = false;
-				break;
-			}
-		}
-		for (int i = 0; i < BillBoardss.size(); i++)
-		{
-			Obj Billbod = BillBoardss[i]->ConvertObj(rot);
-			if (Raycasting(Billbod, Obj(*Playerpos,
-				Vector2(Playerpos->x + poss->x * 2, Playerpos->y + poss->y * 2),
-				ObjLayer::Bill)).able)
-			{
-				able = false;
-				break;
-			}
-		}
-		if (able)
-		{
-			Playerpos->x += poss->x;
-			Playerpos->y += poss->y;
-		}
-	}
+void OnDestroy() 
+{
+	ReleaseConsoleBuffer();
 }
 
 int main()
@@ -376,34 +382,13 @@ int main()
 	cursorInfo.bVisible = FALSE; //커서 Visible TRUE(보임) FALSE(숨김)
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 	SetMap(&MapObjs);
-	/*GameObjss.push_back(Objs({ Vector2(-12*2,-6 * 2), Vector2(12 * 2,-6 * 2), Vector2(12 * 2,12 * 2), Vector2(6 * 2,12 * 2),Vector2(6 * 2,12 * 2) ,Vector2(6 * 2,24 * 2) ,Vector2(18 * 2,24 * 2)
-		,Vector2(18 * 2,42 * 2),Vector2(-36 * 2,42 * 2) ,Vector2(-36 * 2,24 * 2),Vector2(-2,24 * 2) ,Vector2(-2,12 * 2) ,Vector2(-12 * 2,12 * 2)}));*/
-	//GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
 
-//GameObjs[0] =(Obj(Vector2(2, 8), Vector2(-2, 8)));
-//GameObjs.push_back(Obj(Vector2(8, 8), Vector2(-15, 8)));
-//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(-8, 8)));
-//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(8, -8)));
-
-	//vector<Obj4> GameObject4(1);
-//	GameObject4[0] = Obj4(Vector2(-10,10), Vector2(10,10), Vector2(10,-10), Vector2(-10,-10));
-//
-//for (int i = 0; i < GameObject4.size(); i++)
-//{
-//	for (int j = 0; j < 4; j++)
-//	{
-//		GameObjs.push_back(GameObject4[i].lines[j]);
-//	}
-//}
 
 	for (int i = 0; i < MapObjs.size(); i++)
 	{
 		GameObjs.push_back(MapObjs[i]);
 	}
 
-	//BillBoardss.push_back(Billboard(Vector2(3,3),2));
-	//BillBoardss.push_back(Billboard(Vector2(7, 7), 2));
-	//BillBoardss.push_back(Billboard(Vector2(-3, -3), 1));
 	float speedOrigin = 15;
 	int fov = FOV;
 	int resol = 660;
@@ -439,7 +424,7 @@ int main()
 			SetCursorPos(500, 500);
 		}
 
-
+		Init();
 		Input(&poss, &Playerpos, rot, speed);
 		Update(&Playerpos, &poss, rot);
 		Render(fov, Playerpos, rot, resol);
@@ -480,5 +465,7 @@ int main()
 		}*/
 
 	}
+
+	OnDestroy();
 	return 0;
 }

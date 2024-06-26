@@ -65,6 +65,30 @@ Obj Raycasting(Obj gm, Obj ray)
 	return ming;
 }
 
+std::string ObjTypeToString(OBJ_TYPE type)
+{
+	switch (type)
+	{
+	case OBJ_TYPE::WALL:
+		return "WALL";
+		break;
+	case OBJ_TYPE::KEY:
+		return "KEY";
+		break;
+	case OBJ_TYPE::DOOR:
+		return "DOOR";
+		break;
+	case OBJ_TYPE::ENEMY:
+		return "ENEMY";
+		break;
+	case OBJ_TYPE::FORRAYCASTING:
+		return "FORRAYCASTING";
+		break;
+	default:
+		break;
+	}
+}
+
 #define TextureNum 4
 
 int BaseTexture[15][15] =

@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include "DataStructure.h"
 #include "Core.h"
 
 void renderObjs(int fov, std::vector<Obj> GameObjs,

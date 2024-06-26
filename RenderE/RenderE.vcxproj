@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConsoleDoubleBuffer.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="DataStructure.cpp" />
     <ClCompile Include="EnemyGenerator.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="Render.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleDoubleBuffer.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="DataStructure.h" />
     <ClInclude Include="EnemyGenerator.h" />

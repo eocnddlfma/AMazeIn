@@ -1,6 +1,5 @@
 #include "Render.h"
 #include "Core.h"
-#include <iostream>
 void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* objectLayer, float playerRotation)
 {
 	for (int i = 0; i < GameObjs.size(); i++)
@@ -18,7 +17,7 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 			{
 				if (dis < horizontal[0][ii + fov]) {
 					horizontal[0][ii + fov] = dis;
-					std::cout << " distance:" << dis << " obj: " << ray1.ObjType << "\n";
+					//std::cout << " distance:" << dis << " obj: " << ObjTypeToString(ray1.ObjType) << " gameobjpos: " << GameObjs[i].start.x << " " << GameObjs[i].start.y << " gameobjpos: " << GameObjs[i].end.x << " " << GameObjs[i].end.y << "\n";
 					//std::cout <<  "distancex: " << distx << " distance:" << dis <<"\n";
 					objectLayer[ii + fov] = GameObjs[i].la;
 					float distx = VDistace(ray1.ConvertVector2(), GameObjs[i].end) / (VDistace(GameObjs[i].start, GameObjs[i].end));
