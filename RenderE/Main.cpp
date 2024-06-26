@@ -21,6 +21,11 @@ const std::string white = "\033[37m";
 const std::string underline = "\033[4m";
 const std::string g = "\033[32m";
 
+
+constexpr int mapWidth = 100;
+constexpr int mapHeight = 100;
+OBJ_TYPE map[mapWidth][mapHeight];
+
 vector<Obj> GameObjs;
 vector<Obj> MapObjs;
 vector<Billboard*>BillBoardss;
@@ -92,7 +97,19 @@ vector<string> ViewModelArt12 = { {bold},
 								{reset}
 };
 
-void Input(Vector2* poss, Vector2* Playerpos, float rot, float speed)
+void Init()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+	ShowWindow(GetConsoleWindow(),
+		SW_MAXIMIZE);
+	system("mode con: cols=960 lines=540");
+
+	InitConsoleBuffer();
+}
+
+void Input(Vector2* Playerpos, Vector2* poss, float rot, float speed)
 {
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
@@ -133,6 +150,7 @@ void Input(Vector2* poss, Vector2* Playerpos, float rot, float speed)
 }
 
 void Update(Vector2* Playerpos, Vector2* poss, float rot) {
+	//이동하는 빌보드 이동
 	for (int i = 0; i < MovingBillboards.size(); i++) {
 		MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
 		MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
@@ -184,18 +202,18 @@ void Update(Vector2* Playerpos, Vector2* poss, float rot) {
 	}
 }
 
-void Render(const int fov, Vector2 player, float rot, int resol)
+void Render(Vector2 player, float rot, int resol)
 {
 	float** horizontal = new float*[3];
-	float* horizontal2 = new float[fov * 2] { 999, };
+	float* horizontal2 = new float[FOV * 2] { 999, };
 	float** horizontaltx = new float* [3];
-	ObjLayer* las = new ObjLayer[fov * 2];
+	ObjLayer* las = new ObjLayer[FOV * 2];
 	
 	for (int i = 0; i < 3; i++) {
-		horizontal[i] = new float[fov * 2]{999, };
-		horizontaltx[i] = new float[fov * 2] {0, };
+		horizontal[i] = new float[FOV * 2]{999, };
+		horizontaltx[i] = new float[FOV * 2] {0, };
 		//
-		for (int j = 0; j < fov * 2; j++)
+		for (int j = 0; j < FOV * 2; j++)
 		{
 			horizontal[i][j] = 999;
 			horizontaltx[i][j] = 0-i;
@@ -206,12 +224,12 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 		//, &info);
 
 
-	string output2[ScreenHeight];
-	int **outputColor = new int*[ScreenHeight];
-	for (int j = 0; j < 75; j++)
+	string output2[SCREEN_HEIGHT];
+	int **outputColor = new int*[SCREEN_HEIGHT];
+	for (int j = 0; j < SCREEN_HEIGHT; j++)
 	{
-		outputColor[j] = new int[fov*2];
-		for (int i = 0; i < fov * 2; i++)
+		outputColor[j] = new int[FOV *2];
+		for (int i = 0; i < FOV * 2; i++)
 		{
 			outputColor[j][i] = 0;
 			output2[j] += " ";
@@ -219,87 +237,60 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 		//output += "/n";
 	}
 
-	renderObjs(FOV, GameObjs, horizontal, horizontaltx, player, las, rot);
+	renderObjs(GameObjs, horizontal, horizontaltx, player, las, rot);
 	
-	renderBillBoards(FOV, BillBoardss, horizontal, horizontaltx, player, las, rot);
+	renderBillBoards(BillBoardss, horizontal, horizontaltx, player, las, rot);
 
-	for (int ii = 0; ii < 75; ii++)
+	for (int ii = 0; ii < SCREEN_HEIGHT; ii++)
 	{
-		for (int z = 0; z < fov * 2; z++)
+		for (int z = 0; z < FOV * 2; z++)
 		{
-
-			//output[j].push_back(' ');
-			//output[j][ii + fov]='#';
-			//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
 			if (output2[ii][z] == ' ')//비어있는지
 			{
-				if (ii >= horizontal[1][z] / 2 && ii <= 75 - horizontal[1][z] / 2)//하늘이랑 땅 제한
+				//if (ii >= horizontal[1][z] / 2 && ii <= SCREEN_HEIGHT - horizontal[1][z] / 2)//하늘이랑 땅 제한
 				{
-					//float size = ((int)horizontal[1][z] / 2 - (75 - (int)horizontal[1][z] / 2));
+					if (horizontaltx[1][z] < 0)//0보다 작으면 0으로
+					{
+						outputColor[ii][z] = 0;
+					}
+					else if (SCREEN_HEIGHT > horizontal[1][z] / 2)//0보다 크면 인트로 바꿔서 해당 텍스쳐 가져오기
+					{
+						outputColor[ii][z] = GetTextureByNumber(3)[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (SCREEN_HEIGHT - horizontal[1][z] / 2)) * 14)];
 
+					}
 
-						if (horizontaltx[1][z] < 0)//0보다 작으면 0으로
-						{
-							outputColor[ii][z] = 0;
-						}
-						else if (75 > horizontal[1][z] / 2)//0보다 크면 인트로 바꿔서 해당 텍스쳐 가져오기
-						{
-							outputColor[ii][z] = GetTextureByNumber(3)[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (75 - horizontal[1][z] / 2)) * 14)];
+					if (outputColor[ii][z] == 0)//0이면 비어있게 놔두기
+					{
+						output2[ii][z] = ' ';
+						continue;
+					}
 
-						}
+					if ((int)(horizontal[1][z] / 5 / 2) < 7) {// 거리 계산
 
-						if (outputColor[ii][z] == 0)//0이면 비어있게 놔두기
-						{
-							output2[ii][z] = ' ';
-							continue;
-						}
-
-						if ((int)(horizontal[1][z] / 5 / 2) < 7) {// 거리 계산
-
-							output2[ii][z] = Pixels[(int)(horizontal[1][z] / 2 / 10)];//7보다 가까우면 가까움 표시
-						}
-						else
-						{
-							output2[ii][z] = Pixels[6];//그보다 멀면 빈 표시
-						}
-						//output2[ii].insert(ii, reset);
-				//if (las[ii] == ObjLayer::Bill)
-				//{
-				//	output += reset;
-				//}
-
+						output2[ii][z] = Pixels[(int)(horizontal[1][z] / 2 / 10)];//7보다 가까우면 가까움 표시
+					}
+					else
+					{
+						output2[ii][z] = Pixels[6];//그보다 멀면 빈 표시
+					}
 				}
-				//output += '\n';
 			}
 		}
 	}
-	//여기까지 승현이가 방금짬
 	
-	for (int j = 0; j < 75; j++)
+	for (int j = 0; j < SCREEN_HEIGHT; j++)
 	{
-		for (int z = 0; z < fov * 2; z++)
+		for (int z = 0; z < FOV * 2; z++)
 		{
-
-			//output[j].push_back(' ');
-			//output[j][ii + fov]='#';
-			//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
 			if (output2[j][z] == ' ')
 			{
-				if (j >= horizontal[0][z] / 2 && j <= 75 - horizontal[0][z] / 2)
+				if (j >= horizontal[0][z] / 2 && j <= SCREEN_HEIGHT - horizontal[0][z] / 2)
 				{
-					//if (las[ii] == ObjLayer::Bill)
-					//{
-					//	output += red;
-					//}
-
-					//float size = ((int)horizontal[z] / 2 - (75 - (int)horizontal[z] / 2));
-
-					if (75 - horizontal[0][j] / 2 > 0)
-						outputColor[j][z] = GetTextureByNumber(1)[(int)(horizontaltx[0][z] * 14)][(int)fabs((j - horizontal[0][z] / 2) / ((75 - horizontal[0][z])) * 14)];
+					if (SCREEN_HEIGHT - horizontal[0][j] / 2 > 0)
+						outputColor[j][z] = GetTextureByNumber(1)[(int)(horizontaltx[0][z] * 14)][(int)fabs((j - horizontal[0][z] / 2) / ((SCREEN_HEIGHT - horizontal[0][z])) * 14)];
 					else
 						outputColor[j][z] = 0;
-					//output2[ii].insert(ii,colors[ming[(int)(horizontaltx[0][ii] * 14)][(int)fabs((j - horizontal[0][ii]/2) / ((75 - horizontal[0][ii]/2 * 2)) * 14)]]);//(int)((55 - j)/15*horizontaltx[ii])
-
+					
 					if ((int)(horizontal[0][z] / 10) < 7) {
 
 						output2[j][z] = Pixels[(int)(horizontal[0][z] /10)];
@@ -308,11 +299,6 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 					{
 						output2[j][z] = Pixels[6];
 					}
-					//output += reset;
-					//if (las[ii] == ObjLayer::Bill)
-					//{
-					//	output += reset;
-					//}
 				}
 				else
 				{
@@ -324,9 +310,9 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 
 	Gotoxy(0, 0);
 	string output = "";
-	for(int i =0; i<75; i++)
+	for(int i =0; i<SCREEN_HEIGHT; i++)
 	{
-		for (int j = 0; j < fov * 2; j++)
+		for (int j = 0; j < FOV * 2; j++)
 		{
 			output += colors[outputColor[i][j]];
 			output +=output2[i][j];
@@ -335,7 +321,11 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 		output += '\n';
 	}
 	//cout << output;
-	RenderConsole(output);
+	string s;
+	s = to_string(MovingBillboards.size());
+	PrintConsoleBuffer(0, 0, output);
+	PrintConsoleBuffer(0, 0, s);
+	RenderConsole("");
 	//cout << "\n" << player.x << " " << player.y;
 	//output.clear();
 	
@@ -345,31 +335,14 @@ void Render(const int fov, Vector2 player, float rot, int resol)
 	delete horizontal;
 }
 
-void Init()
-{
-	InitConsoleBuffer();
-}
-
 void OnDestroy() 
 {
 	ReleaseConsoleBuffer();
 }
 
+
 int main()
 {
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof(cfi);
-	cfi.nFont = 0;
-	cfi.dwFontSize.X = 10;                   // Width of each character in the font
-	cfi.dwFontSize.Y = 10;                  // Height
-	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-	ShowWindow(GetConsoleWindow(),
-		SW_MAXIMIZE);
-	system("mode con: cols=960 lines=540");
 	//HWND console = GetConsoleWindow();
 	//LONG style = GetWindowLong(console, GWL_STYLE);
 
@@ -378,12 +351,9 @@ int main()
 
 	//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (15<<4)|0);
 
-	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
-	cursorInfo.bVisible = FALSE; //커서 Visible TRUE(보임) FALSE(숨김)
-	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+
+
 	SetMap(&MapObjs);
-
-
 	for (int i = 0; i < MapObjs.size(); i++)
 	{
 		GameObjs.push_back(MapObjs[i]);
@@ -400,6 +370,9 @@ int main()
 	QueryPerformanceCounter(&Current);
 	QueryPerformanceFrequency(&MING);
 	last = Current;
+
+
+	Init();
 	while (true)
 	{
 		QueryPerformanceCounter(&Current);
@@ -424,46 +397,9 @@ int main()
 			SetCursorPos(500, 500);
 		}
 
-		Init();
-		Input(&poss, &Playerpos, rot, speed);
+		Input(&Playerpos, &poss, rot, speed);
 		Update(&Playerpos, &poss, rot);
-		Render(fov, Playerpos, rot, resol);
-
-
-
-		/*if (_kbhit())
-		{
-			char a = _getch();
-			if (a =='w')
-			{
-			poss.x += cos(rot) * 0.01f;
-			poss.y += sin(rot)*0.01f;
-			}
-			if((a=='s'))
-			{
-				poss.x += cos(rot) * -0.01f;
-				poss.y += sin(rot) * -0.01f;
-			}
-			if (a == 'a')
-			{
-				poss.x += cos(rot+1.7079) * -0.01f;
-				poss.y += sin(rot+1.7079) * -0.01f;
-			}
-			if ((a == 'd'))
-			{
-				poss.x += cos(rot+ 1.7079) * 0.01f;
-				poss.y += sin(rot+ 1.7079) * 0.01f;
-			}
-			if (a == 'q')
-			{
-
-			}
-			if (a == 'e')
-			{
-
-			}
-		}*/
-
+		Render(Playerpos, rot, resol);
 	}
 
 	OnDestroy();

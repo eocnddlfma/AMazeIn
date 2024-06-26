@@ -2,9 +2,6 @@
 
 static int map[100][100];
 
-void SetMap(std::vector<Obj> GameObjs, int size, Vector2 minPos, Vector2 maxPos)
-{
-}
 
 Vector2 FindAndGetDir(Vector2 playerPos, Vector2 EnemyPos)
 {

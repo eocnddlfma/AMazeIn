@@ -1,13 +1,12 @@
 #pragma once
 #include "Core.h"
 
-void renderObjs(int fov, std::vector<Obj> GameObjs,
+void renderObjs(std::vector<Obj> GameObjs,
 	float** horizontal, float** HorizontalTexture,
 	Vector2 player, ObjLayer* las, float playerRotation);
 
-void renderBillBoards(int fov, std::vector<Billboard*> Billboards,
+void renderBillBoards(std::vector<Billboard*> Billboards,
 	float** horizontal, float** HorizontalTexture,
 	Vector2 player, ObjLayer* las, float playerRotation);
 
-void renderMap(int width, int height, int** map);
-
+std::string renderMap(Vector2 playerPosition, int width, int height, int** map);

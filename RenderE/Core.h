@@ -1,7 +1,7 @@
 #pragma once
-#define FOV 140
-#define RESOLUTION 660
-#define ScreenHeight 75
+#define FOV 150
+#define RESOLUTION 1080
+#define SCREEN_HEIGHT 50
 
 #include "DataStructure.h"
 
@@ -11,4 +11,5 @@ float VDistace(Vector2 a, Vector2 b);
 std::string ObjTypeToString(OBJ_TYPE type);
 Obj Raycasting(Obj gm, Obj ray);
 int(*GetTextureByNumber(int num))[15];
-int** LineToMap(Vector2 playerPos, vector<Obj> Objs, int width, int height);
+int GetAllCollisions(vector<Obj> Objs, Obj Line, vector<Obj>* collidedObjList);
+void LineToMap(Vector2 playerPos, vector<Obj> Objs, int startX, int startY, int width, int height, OBJ_TYPE** targetMap);

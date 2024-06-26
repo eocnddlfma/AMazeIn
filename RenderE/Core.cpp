@@ -1,4 +1,5 @@
 #include "Core.h"
+
 void SetColor(int _textcolor, int _bgcolor)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE)
@@ -214,19 +215,39 @@ int(*GetTextureByNumber(int num))[15]
 	//	return COORD{ width,height };
 	//}
 
-int** LineToMap(Vector2 playerPos, vector<Obj> Objs, int width, int height)
+int GetAllCollisions(vector<Obj> Objs, Obj Line, vector<Obj>* collidedObjList)
 {
-	int** map = new int*[width];
-	for (int i = 0; i < height; i++)
+	int num = 0;
+	for (Obj v : Objs)
 	{
-		for (int j = 0; j < width; j++)
+		Obj result = Raycasting(v, Line);
+		if (result.able)
+		{
+			num++;
+			collidedObjList->push_back(result);
+		}
+	}
+	return num;
+}
+
+void LineToMap(Vector2 playerPos, vector<Obj> Objs, int startX, int startY, int width, int height, int** targetMap)
+{
+	for (int i = startY; i < startY + height; i++)
+	{
+		for (int j = startX; j < startX +width; j++)
 		{
 			for(Obj v : Objs)
 			{
+				Obj result1 = Raycasting(v, Obj(Vector2(j, i), Vector2(j + 1, i + 1)));
+				Obj result2 = Raycasting(v, Obj(Vector2(j, i+1), Vector2(j + 1, i)));
 
+				if (result1.able && result1.ObjType != OBJ_TYPE::FORRAYCASTING)
+					targetMap[i][j] = (int)result1.ObjType;
+				if (result2.able && result2.ObjType != OBJ_TYPE::FORRAYCASTING)
+					targetMap[i][j] = (int)result1.ObjType;
 			}
 		}
 	}
-
-	return map;
+	targetMap[(int)playerPos.y][(int)playerPos.x] = (int)OBJ_TYPE::PLAYER;
+	return;
 }
