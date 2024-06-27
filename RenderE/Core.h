@@ -1,7 +1,7 @@
 #pragma once
 #define FOV 150
 #define RESOLUTION 1080
-#define SCREEN_HEIGHT 50
+#define SCREEN_HEIGHT 75
 
 #include "DataStructure.h"
 

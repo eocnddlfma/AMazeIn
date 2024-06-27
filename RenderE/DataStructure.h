@@ -8,7 +8,7 @@
 using std::vector;
 
 enum class OBJ_TYPE {
-	WALL=1, KEY, DOOR, ENEMY, PLAYER, FORRAYCASTING
+	WALL=1, BULLET, KEY, DOOR, ENEMY, PLAYER, FORRAYCASTING, NON
 };
 
 enum ObjLayer {

@@ -173,11 +173,11 @@ int BulletTexture[15][15] =
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,0,1,1,1,1,1,0,0,0,0,0,0},
+{0,0,0,0,1,1,1,1,1,0,0,0,0,0,0},
+{0,0,0,0,1,1,1,1,1,0,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -230,7 +230,7 @@ int GetAllCollisions(vector<Obj> Objs, Obj Line, vector<Obj>* collidedObjList)
 	return num;
 }
 
-void LineToMap(Vector2 playerPos, vector<Obj> Objs, int startX, int startY, int width, int height, int** targetMap)
+void LineToMap(Vector2 playerPos, vector<Obj> Objs, int startX, int startY, int width, int height, OBJ_TYPE** targetMap)
 {
 	for (int i = startY; i < startY + height; i++)
 	{
@@ -242,12 +242,12 @@ void LineToMap(Vector2 playerPos, vector<Obj> Objs, int startX, int startY, int 
 				Obj result2 = Raycasting(v, Obj(Vector2(j, i+1), Vector2(j + 1, i)));
 
 				if (result1.able && result1.ObjType != OBJ_TYPE::FORRAYCASTING)
-					targetMap[i][j] = (int)result1.ObjType;
+					targetMap[i][j] = result1.ObjType;
 				if (result2.able && result2.ObjType != OBJ_TYPE::FORRAYCASTING)
-					targetMap[i][j] = (int)result1.ObjType;
+					targetMap[i][j] = result1.ObjType;
 			}
 		}
 	}
-	targetMap[(int)playerPos.y][(int)playerPos.x] = (int)OBJ_TYPE::PLAYER;
+	targetMap[(int)playerPos.y][(int)playerPos.x] = OBJ_TYPE::PLAYER;
 	return;
 }

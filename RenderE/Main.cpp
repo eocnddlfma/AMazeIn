@@ -135,7 +135,7 @@ void Input(Vector2* Playerpos, Vector2* poss, float rot, float speed)
 		char a = _getch();
 		if (a == 'f')
 		{
-			Billboard* ming = new Billboard(*Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 2, OBJ_TYPE::ENEMY);
+			Billboard* ming = new Billboard(*Playerpos, 1, Vector2(cosf(rot), sinf(rot)), 0.4f, OBJ_TYPE::BULLET);
 			BillBoardss.push_back(ming);
 			MovingBillboards.push_back(ming);
 		}
@@ -149,7 +149,7 @@ void Input(Vector2* Playerpos, Vector2* poss, float rot, float speed)
 	}
 }
 
-void Update(Vector2* Playerpos, Vector2* poss, float rot) {
+void Update(Vector2* Playerpos, Vector2* poss, float rot, float deltaTime) {
 	//이동하는 빌보드 이동
 	for (int i = 0; i < MovingBillboards.size(); i++) {
 		MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
@@ -164,8 +164,8 @@ void Update(Vector2* Playerpos, Vector2* poss, float rot) {
 		Obj ray1 = Raycasting(Obj(EnemyList[i]->render.pos, EnemyList[i]->render.pos + EnemyList[i]->render.dir),
 			Obj(Vector2(Playerpos->x, Playerpos->y), Vector2(Playerpos->x + rot, Playerpos->y + rot)));
 		if (ray1.able) {
-			EnemyList[i]->render.pos.x += EnemyList[i]->render.dir.x * EnemyList[i]->render.speed;
-			EnemyList[i]->render.pos.y += EnemyList[i]->render.dir.y * EnemyList[i]->render.speed;
+			EnemyList[i]->render.pos.x += EnemyList[i]->render.dir.x * EnemyList[i]->render.speed * deltaTime;
+			EnemyList[i]->render.pos.y += EnemyList[i]->render.dir.y * EnemyList[i]->render.speed * deltaTime;
 		}
 		else {
 			//적과 닿음.
@@ -398,7 +398,7 @@ int main()
 		}
 
 		Input(&Playerpos, &poss, rot, speed);
-		Update(&Playerpos, &poss, rot);
+		Update(&Playerpos, &poss, rot, deltaTime);
 		Render(Playerpos, rot, resol);
 	}
 
