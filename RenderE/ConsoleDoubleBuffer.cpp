@@ -23,25 +23,26 @@ void InitConsoleBuffer()
 	g_hScreen[0] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	g_hScreen[1] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 
-	CONSOLE_SCREEN_BUFFER_INFO consoleInfo{ 0, };
-	GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+	CONSOLE_SCREEN_BUFFER_INFOEX consoleInfo{ 0, };
+	GetConsoleScreenBufferInfoEx(hConsole, &consoleInfo);
 	//system("mode con: cols=960 lines=540");
 	consoleInfo.srWindow.Left = 0;
 	consoleInfo.srWindow.Top = 0;
-	consoleInfo.srWindow.Bottom = 540;    // 콘솔의 Height
+	consoleInfo.srWindow.Bottom = 800;    // 콘솔의 Height
 	consoleInfo.srWindow.Right = 960;    // 콘솔의 Width
 
 
 	// 커서를 숨긴다.
 	cci.dwSize = 1;
-	cci.bVisible = FALSE;
+	cci.bVisible = FALSE; 
+	SetConsoleScreenBufferInfoEx(hConsole, &consoleInfo);
+
 	SetConsoleCursorInfo(g_hScreen[0], &cci);
-	SetConsoleScreenBufferSize(g_hScreen[0], consoleInfo.dwSize);    // 화면 버퍼 크기 설정
-	SetConsoleWindowInfo(g_hScreen[0], TRUE, &consoleInfo.srWindow); // 콘솔 설정
+	SetConsoleScreenBufferInfoEx(g_hScreen[0], &consoleInfo); // 콘솔 설정
 
 	SetConsoleCursorInfo(g_hScreen[1], &cci);
-	SetConsoleScreenBufferSize(g_hScreen[1], consoleInfo.dwSize);    // 화면 버퍼 크기 설정
-	SetConsoleWindowInfo(g_hScreen[1], TRUE, &consoleInfo.srWindow); // 콘솔 설정
+	SetConsoleScreenBufferInfoEx(g_hScreen[1], &consoleInfo); // 콘솔 설정
+
 }
 
 void FlipConsoleBuffer()
@@ -54,7 +55,7 @@ void ClearConsole()//재사용전 클리어
 {
 	COORD Coord = { 0, 0 };
 	DWORD dw;
-	FillConsoleOutputCharacter(hConsole, ' ', (SCREEN_HEIGHT+50) * FOV, Coord, &dw);
+	FillConsoleOutputCharacter(hConsole, ' ', (SCREEN_HEIGHT) * FOV, Coord, &dw);
 }
 
 void PrintConsoleBuffer(int x, int y, std::string s)

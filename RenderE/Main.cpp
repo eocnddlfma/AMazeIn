@@ -31,7 +31,7 @@ vector<Obj> MapObjs;
 vector<Billboard*>BillBoardss;
 vector<Billboard*>MovingBillboards;
 vector<Enemy*>EnemyList;
-char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
+char Pixels[8] = { '@','#','X','+','x','*','^',' ' };
 char PixelsGround[15] = { '~','-','-','-',',',',',',','.','.','.','.','.','.',' ',' ' };
 string colors[9] = { bold,red,blue,yellow,purple, cyan ,green,black,white};
 
@@ -324,8 +324,8 @@ void Render(Vector2 player, float rot, int resol)
 	string s;
 	s = to_string(MovingBillboards.size());
 	PrintConsoleBuffer(0, 0, output);
-	PrintConsoleBuffer(0, 0, s);
-	RenderConsole("");
+	//PrintConsoleBuffer(0, 0, s);
+	FlipConsoleBuffer();
 	//cout << "\n" << player.x << " " << player.y;
 	//output.clear();
 	
