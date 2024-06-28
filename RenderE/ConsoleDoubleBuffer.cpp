@@ -28,7 +28,7 @@ void InitConsoleBuffer()
 	//system("mode con: cols=960 lines=540");
 	consoleInfo.srWindow.Left = 0;
 	consoleInfo.srWindow.Top = 0;
-	consoleInfo.srWindow.Bottom = 800;    // 콘솔의 Height
+	consoleInfo.srWindow.Bottom = 400;    // 콘솔의 Height
 	consoleInfo.srWindow.Right = 960;    // 콘솔의 Width
 
 
@@ -39,9 +39,11 @@ void InitConsoleBuffer()
 
 	SetConsoleCursorInfo(g_hScreen[0], &cci);
 	SetConsoleScreenBufferInfoEx(g_hScreen[0], &consoleInfo); // 콘솔 설정
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 
 	SetConsoleCursorInfo(g_hScreen[1], &cci);
-	SetConsoleScreenBufferInfoEx(g_hScreen[1], &consoleInfo); // 콘솔 설정
+	SetConsoleScreenBufferInfoEx(g_hScreen[1], &consoleInfo); // 콘솔 
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 
 }
 

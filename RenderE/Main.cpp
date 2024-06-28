@@ -102,10 +102,16 @@ void Init()
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	ShowWindow(GetConsoleWindow(),
-		SW_MAXIMIZE);
 	system("mode con: cols=960 lines=540");
 
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = 4;                   // Width of each character in the font
+	cfi.dwFontSize.Y = 4;                  // Height
+	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	InitConsoleBuffer();
 }
 
@@ -321,10 +327,7 @@ void Render(Vector2 player, float rot, int resol)
 		output += '\n';
 	}
 	//cout << output;
-	string s;
-	s = to_string(MovingBillboards.size());
 	PrintConsoleBuffer(0, 0, output);
-	//PrintConsoleBuffer(0, 0, s);
 	FlipConsoleBuffer();
 	//cout << "\n" << player.x << " " << player.y;
 	//output.clear();
