@@ -9,5 +9,5 @@ void renderObjs(int fov, std::vector<Obj> GameObjs,
 
 void renderBillBoards(int fov, std::vector<Billboard*> Billboards,
 	float** horizontal, float** HorizontalTexture,
-	Vector2 player, ObjLayer* las, float playerRotation);
+	Vector2 player, ObjLayer* las, float playerRotation, int* horizontaltxType);
 

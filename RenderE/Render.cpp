@@ -35,7 +35,7 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 	}
 }
 
-void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation)
+void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation,int*horizontaltxType)
 {
 	for (int i = 0; i < Billboards.size(); i++) {
 
@@ -64,7 +64,7 @@ void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horiz
 						{
 							distx = 1;
 						}
-
+						horizontaltxType[ii + fov] = Billboards[i]->textureNum;
 						HorizontalTexture[1][ii + fov] = distx;
 					}
 				}

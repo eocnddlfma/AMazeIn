@@ -34,7 +34,7 @@ vector<Billboard*>BillBoardss;
 vector<Billboard*>MovingBillboards;
 vector<Billboard*>EnemyBillboards;
 char Pixels[8] = { '@','#','X','x','+','*','^',' ' };
-char PixelsGround[15] = { '~','-','-','-',',',',',',','.','.','.','.','.','.',' ',' ' };
+char PixelsGround[15] = { '~','~','-','-',',',',','.',' ','.',',',',','-','-','~','~' };
 string colors[9] = { bold,red,blue,yellow,purple, cyan ,green,black,white};
 
 #define TextureNum 3
@@ -60,8 +60,8 @@ int ming[15][15] =
 
 int Enemy[15][15]=
 { 
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,1,1,0,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,0,1,0,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,1,1,0,0},
 {0,0,0,0,0,0,1,1,0,0,1,1,1,1,0},
@@ -73,8 +73,8 @@ int Enemy[15][15]=
 {0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
 {0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+{0,0,0,1,0,0,1,0,0,0,0,0,0,0,0},
+{0,0,0,1,0,0,1,0,0,0,0,0,0,0,0}
 };
 
 //{
@@ -96,24 +96,77 @@ int Enemy[15][15]=
 //};
 int BulletTexture[15][15] =
 {
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,1,0,1,1,1,1,1,1,1,0,1,0,0},
+{0,0,1,0,1,1,1,1,1,1,1,0,1,0,0},
+{0,0,1,0,1,1,1,1,1,1,1,0,1,0,0},
+{0,0,1,0,1,1,1,1,1,1,1,0,1,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
+{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0}
 };
 
-
+int BillTXS[3][15][15] =
+{
+{
+{0,0,0,1,1,0,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,0,1,0,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,1,1,0,0},
+{0,0,0,0,0,0,1,1,0,0,1,1,1,1,0},
+{1,1,1,1,1,1,1,1,0,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+{0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,0,1,1,1,1,1,0},
+{1,1,1,1,1,1,1,1,0,0,0,1,1,0,0},
+{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,0,0,1,0,0,0,0,0,0,0,0},
+{0,0,0,1,0,0,1,0,0,0,0,0,0,0,0}
+},
+{
+{0,0,0,1,1,0,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,0,1,0,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,1,1,0,0},
+{0,0,0,0,0,0,1,1,0,0,1,1,1,1,0},
+{1,1,1,1,1,1,1,1,0,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+{0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+{1,1,1,1,1,1,1,1,0,1,1,1,1,1,0},
+{1,1,1,1,1,1,1,1,0,0,0,1,1,0,0},
+{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,1,1,1,1,0,0,0,0,0,0,0},
+{0,0,0,1,0,0,1,0,0,0,0,0,0,0,0},
+{0,0,0,1,0,0,1,0,0,0,0,0,0,0,0}
+},
+{
+{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+{0,3,0,0,0,0,1,1,1,0,0,0,0,0,0},
+{0,0,0,0,0,1,1,3,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,3,1,1,0,0,0,0,0},
+{0,0,0,0,0,1,1,3,1,1,0,0,0,0,0},
+{0,0,0,0,1,3,3,3,1,3,1,0,0,0,0},
+{0,0,0,0,1,3,3,3,1,3,1,3,0,0,0},
+{0,0,0,0,1,3,3,3,1,3,1,0,3,0,0},
+{0,0,0,0,1,3,3,3,3,3,1,0,0,0,0},
+{0,0,0,0,0,3,3,3,3,1,0,0,0,0,0},
+{0,0,3,0,0,1,3,3,3,1,0,0,3,0,0},
+{0,0,0,0,0,1,3,3,3,1,0,0,0,0,0},
+{0,0,3,0,0,1,1,3,1,1,0,3,0,0,0},
+{0,0,0,0,0,0,1,3,1,0,0,0,0,0,0},
+{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0}
+}
+};
 int(*GetTextureByNumber(int num))[15]
 	{
 		switch (num)
@@ -202,11 +255,12 @@ vector<string> ViewModelArt12 = { {bold},
 								{reset}
 };
 
-void Renderer(const int fov, Vector2 player, float rot, int resol)
+void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 {
 	float** horizontal = new float*[3];
 	float* horizontal2 = new float[fov * 2] { 999, };
 	float** horizontaltx = new float* [3];
+	int* horizontaltxType = new int [fov * 2] {0};
 	float** horizontalTextureNum = new float* [TextureNum + 1];
 	ObjLayer* las = new ObjLayer[fov * 2];
 	
@@ -239,9 +293,16 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		//output += "/n";
 	}
 
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < playerhp * 10; j++) {
+			output2[i + 8][j + 8] = 'H';
+		}
+	}
+
+
 	renderObjs(FOV, GameObjs, horizontal, horizontaltx, player, las, rot);
-	
-	renderBillBoards(FOV, BillBoardss, horizontal, horizontaltx, player, las, rot);
+
+	renderBillBoards(FOV, BillBoardss, horizontal, horizontaltx, player, las, rot,horizontaltxType);
 
 	for (int ii = 0; ii < SCREEN_HEIGHT; ii++)
 	{
@@ -269,7 +330,8 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 						}
 						else if (SCREEN_HEIGHT > horizontal[1][z] / 2)
 						{
-							outputColor[ii][z] = BulletTexture[(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (SCREEN_HEIGHT - horizontal[1][z] / 2)) * 14)];
+							
+							outputColor[ii][z] = BillTXS[horizontaltxType[z]][(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (SCREEN_HEIGHT - horizontal[1][z] / 2)) * 14)];
 
 						}
 
@@ -377,17 +439,6 @@ void Update() {
 
 int main()
 {
-
-	//CONSOLE_FONT_INFOEX cfi;
-	//cfi.cbSize = sizeof(cfi);
-	//cfi.nFont = 0;
-	//cfi.dwFontSize.X = 10;                   // Width of each character in the font
-	//cfi.dwFontSize.Y = 10;                  // Height
-	//SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-
-
-	//ShowWindow(GetConsoleWindow(),
-	//	SW_MAXIMIZE);
 	system("mode con: cols=960 lines=540");
 
 		ios_base::sync_with_stdio(false);
@@ -416,15 +467,11 @@ int main()
 	//SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 	vector<Obj> GameObjss;
 	SetMap(&GameObjss);
-	/*GameObjss.push_back(Objs({ Vector2(-12*2,-6 * 2), Vector2(12 * 2,-6 * 2), Vector2(12 * 2,12 * 2), Vector2(6 * 2,12 * 2),Vector2(6 * 2,12 * 2) ,Vector2(6 * 2,24 * 2) ,Vector2(18 * 2,24 * 2)
-		,Vector2(18 * 2,42 * 2),Vector2(-36 * 2,42 * 2) ,Vector2(-36 * 2,24 * 2),Vector2(-2,24 * 2) ,Vector2(-2,12 * 2) ,Vector2(-12 * 2,12 * 2)}));*/
-	//GameObjss.push_back(Objs({ Vector2(3,3), Vector2(3,6), Vector2(6,6), Vector2(6,3) },ObjLayer::Bill));
 
 //GameObjs[0] =(Obj(Vector2(2, 8), Vector2(-2, 8)));
 //GameObjs.push_back(Obj(Vector2(8, 8), Vector2(-15, 8)));
 //GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(-8, 8)));
 //GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(8, -8)));
-
 	//vector<Obj4> GameObject4(1);
 //	GameObject4[0] = Obj4(Vector2(-10,10), Vector2(10,10), Vector2(10,-10), Vector2(-10,-10));
 //
@@ -441,11 +488,8 @@ int main()
 		GameObjs.push_back(GameObjss[i]);
 	}
 
-	//BillBoardss.push_back(Billboard(Vector2(3,3),2));
-	//BillBoardss.push_back(Billboard(Vector2(7, 7), 2));
-	//BillBoardss.push_back(Billboard(Vector2(-3, -3), 1));
 	float speedOrigin = 15;
-	int fov = FOV;
+	int fov = FOV,playerHP=5;
 	int resol = 660;
 	float rot = 0, speed = 0;
 	Vector2 Playerpos = Vector2(0, 0);
@@ -472,7 +516,7 @@ int main()
 			rot = 2 * 3.141591;
 		}
 
-		Renderer(fov, Playerpos, rot, resol);
+		Renderer(fov, Playerpos, rot, resol,playerHP);
 		if (GetAsyncKeyState('W') & 0x8000)
 		{
 			poss.x += cosf(rot) * speed;
@@ -503,8 +547,6 @@ int main()
 		}
 		else
 		{
-
-
 			if (PLUSHEIGHT > 0.01f)
 			{
 				PLUSHEIGHT -= 2;
@@ -523,22 +565,49 @@ int main()
 			char a = _getch();
 			if (a == 'f')
 			{
-				Billboard* ming = new Billboard(Playerpos, 1, Vector2(cosf(rot), sinf(rot)), 0.2);
+				Billboard* ming = new Billboard(Playerpos, 0.4, Vector2(cosf(rot), sinf(rot)), 10,2);
 				BillBoardss.push_back(ming);
 				MovingBillboards.push_back(ming);
+
+				for (int i = 0; i < EnemyBillboards.size(); i++) {
+					if (Raycasting(EnemyBillboards[i]->ConvertObj(rot), Obj(Vector2(Playerpos.x, Playerpos.y), Vector2(Playerpos.x + cosf(rot) * 300, Playerpos.y + sinf(rot) * 300))).able) 
+					{
+						BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
+						MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
+						Billboard* ming = EnemyBillboards[i];
+						EnemyBillboards.erase(EnemyBillboards.begin() + i);
+						delete ming;
+					}
+				}
+
 			}
-			/*if (a == 'g')
+			if (a == 'g')
 			{
-				Billboard enemy(Playerpos, 0.4f, Vector2(cosf(rot), sinf(rot)), 0.4, 3);
+				Billboard* enemy = new Billboard(Vector2(Playerpos.x + 10,Playerpos.y+10), 2, Vector2(),0.6, 1);
 				BillBoardss.push_back(enemy);
-				MovingBillboards.push_back(&BillBoardss[BillBoardss.size() - 1]);
-				EnemyBillboards.push_back(&BillBoardss[BillBoardss.size() - 1]);
-			}*/
+				MovingBillboards.push_back(enemy);
+				EnemyBillboards.push_back(enemy);
+			}
 		}
 
 		for (int i = 0; i < MovingBillboards.size(); i++) {
 			MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
 			MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
+
+		}
+
+		for (int i = 0; i < EnemyBillboards.size(); i++) {
+			EnemyBillboards[i]->dir = Vector2(Playerpos.x - EnemyBillboards[i]->pos.x, Playerpos.y - EnemyBillboards[i]->pos.y).Normalized();
+			if (VDistace(EnemyBillboards[i]->pos, Playerpos) < 0.8)
+			{
+				playerHP--;
+				
+				BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
+				MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
+				Billboard* ming = EnemyBillboards[i];
+				EnemyBillboards.erase(EnemyBillboards.begin() + i);
+				delete ming;
+			}
 		}
 
 		if (poss.x != 0 || poss.y != 0)
@@ -562,7 +631,6 @@ int main()
 				}
 			}
 
-
 			if (able)
 			{
 				Playerpos.x += poss.x;
@@ -580,41 +648,6 @@ int main()
 			TMPMousePos = p;
 			SetCursorPos(500, 500);
 		}
-
-
-		/*if (_kbhit())
-		{
-			char a = _getch();
-			if (a =='w')
-			{
-			poss.x += cos(rot) * 0.01f;
-			poss.y += sin(rot)*0.01f;
-			}
-			if((a=='s'))
-			{
-				poss.x += cos(rot) * -0.01f;
-				poss.y += sin(rot) * -0.01f;
-			}
-			if (a == 'a')
-			{
-				poss.x += cos(rot+1.7079) * -0.01f;
-				poss.y += sin(rot+1.7079) * -0.01f;
-			}
-			if ((a == 'd'))
-			{
-				poss.x += cos(rot+ 1.7079) * 0.01f;
-				poss.y += sin(rot+ 1.7079) * 0.01f;
-			}
-			if (a == 'q')
-			{
-
-			}
-			if (a == 'e')
-			{
-
-			}
-		}*/
-
 	}
 	return 0;
 }

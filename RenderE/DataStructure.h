@@ -21,6 +21,10 @@ struct Vector2 {
 	{
 		return sqrtf(x * x + y * y);
 	}
+	Vector2 Normalized() 
+	{
+		return Vector2(x / Vector2(x, y).Distance(), y /Vector2(x, y).Distance());
+	}
 	bool able = true;
 };
 
