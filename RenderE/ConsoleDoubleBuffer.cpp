@@ -47,24 +47,26 @@ void InitConsoleBuffer()
 
 }
 
-void FlipConsoleBuffer()
-{
-	SetConsoleActiveScreenBuffer(g_hScreen[screenIndex?1:0]);
-	screenIndex = !screenIndex;
-}
-
 void ClearConsole()//재사용전 클리어
 {
 	COORD Coord = { 0, 0 };
 	DWORD dw;
-	FillConsoleOutputCharacter(hConsole, ' ', (150) * 75, Coord, &dw);
+	FillConsoleOutputCharacter(g_hScreen[screenIndex ? 1 : 0], ' ', (FOV) * SCREEN_HEIGHT*4, Coord, &dw);
+	//CloseHandle(g_hScreen[screenIndex ? 1 : 0]);
 }
+
+void FlipConsoleBuffer()
+{
+	SetConsoleActiveScreenBuffer(g_hScreen[screenIndex?1:0]);
+	screenIndex = !screenIndex;
+	ClearConsole();
+}
+
 
 void PrintConsoleBuffer(int x, int y, std::string s)
 {
 	DWORD dw;
 	COORD CursorPosition = { x, y };
-
 	SetConsoleCursorPosition(g_hScreen[screenIndex ? 1 : 0], CursorPosition);
 	WriteFile(g_hScreen[screenIndex ? 1 : 0], s.c_str(), strlen(s.c_str()), &dw, NULL);
 }

@@ -35,11 +35,11 @@ void renderObjs(int fov, std::vector<Obj> GameObjs, float** horizontal, float** 
 	}
 }
 
-void renderBillBoards(int fov, std::vector<Billboard> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation)
+void renderBillBoards(int fov, std::vector<Billboard*> Billboards, float** horizontal, float** HorizontalTexture, Vector2 player, ObjLayer* las, float playerRotation)
 {
 	for (int i = 0; i < Billboards.size(); i++) {
 
-		Obj Billbod = Billboards[i].ConvertObj(playerRotation);
+		Obj Billbod = Billboards[i]->ConvertObj(playerRotation);
 		for (int ii = -fov; ii < fov; ii++)
 		{
 			/*Vector2 ray1 = Raycasting(GameObjs[i], Obj(Vector2(player.x, player.y), Vector2(player.x+ ((float)ii + rot) * 990, player.y+ fov * 990 )));*/

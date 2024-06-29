@@ -1,6 +1,10 @@
 #pragma once
-#define FOV 140
-#define RESOLUTION 660
+//#define FOV 200
+//#define RESOLUTION 1080
+//#define SCREEN_HEIGHT 75
+
+static int FOV = 200, RESOLUTION = 1080, SCREEN_HEIGHT = 100;
+static float PLUSHEIGHT = 0;
 
 #include<iostream>
 #include "Windows.h"
