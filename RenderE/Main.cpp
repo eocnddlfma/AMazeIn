@@ -1,4 +1,4 @@
-#include<iostream>
+ï»¿#include<iostream>
 #include "Windows.h"
 #include"conio.h"
 #include<vector>
@@ -10,6 +10,7 @@
 #include "Core.h"
 #include "mapinitializer.h"
 #include "ConsoleDoubleBuffer.h"
+#include "TitleScene.h"
 
 using namespace std;
 
@@ -193,68 +194,6 @@ int(*GetTextureByNumber(int num))[15]
 //	return COORD{ width,height };
 //}
 
-vector<string> ViewModelArt1 = { {bold},
-								{"    #############"},
-								{" 000=##############"},
-								{"0000==###############"},
-								{" 000====##############"},
-								{"  00=====##############"},
-								{"    ======##############"},
-								{"    =======##############"},
-								{"    ========##############"},
-								{"    =========##############"},
-								{"     ===========###########"},
-								{"      ===========############"},
-								{"       ===========#############"},
-								{"       ============#############"},
-								{"      ----==========##############"},
-								{"      ----============#############"},
-								{"      ------===========#############"},
-								{"      ------===========#############"},
-								{"      ------+===========#############"},
-								{"       ----------===========############"},
-								{"        --------- ==========#############"},
-								{"         --------   =========#############"},
-								{"                     ========#############"},
-								{"                      ========#############"},
-								{"                       =======#############"},
-								{"                  ============#############"},
-								{"                 =============#############"},
-								{"                 =============#############"},
-								{reset}
-};
-vector<string> ViewModelArt12 = { {bold},
-								{"            :            "},
-								{"      .    ::              "},
-								{"   .  ..  ::::             "},
-								{"   . . :::::#############"},
-								{"     :::000=##############"},
-								{" ::::::0000==###############"},
-								{"  .  :::000====##############"},
-								{"       ::00=====##############"},
-								{"         ::======##############"},
-								{"         ::=======##############"},
-								{"           ========##############"},
-								{"           =========##############"},
-								{"            ===========###########"},
-								{"             ===========############"},
-								{"              ===========#############"},
-								{"              ============#############"},
-								{"             ----==========##############"},
-								{"             ----============#############"},
-								{"             ------===========#############"},
-								{"             ------===========#############"},
-								{"             ------+===========#############"},
-								{"              ----------===========############"},
-								{"               --------- ==========#############"},
-								{"                --------   =========#############"},
-								{"                            ========#############"},
-								{"                             ========#############"},
-								{"                              =======#############"},
-
-								{reset}
-};
-
 void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 {
 	float** horizontal = new float*[3];
@@ -280,7 +219,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 		//, &info);
 
 
-	string* output2 = new string[SCREEN_HEIGHT];
+	vector<string> output2(SCREEN_HEIGHT);
 	int **outputColor = new int*[SCREEN_HEIGHT];
 	for (int j = 0; j < SCREEN_HEIGHT; j++)
 	{
@@ -290,8 +229,8 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 			outputColor[j][i] = 0;
 			output2[j] += " ";
 		}
-		//output += "/n";
 	}
+	//output2 =
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < playerhp * 10; j++) {
@@ -362,7 +301,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 			}
 		}
 	}
-	//¿©±â±îÁö ½ÂÇöÀÌ°¡ ¹æ±ÝÂ«
+	//ì—¬ê¸°ê¹Œì§€ ìŠ¹í˜„ì´ê°€ ë°©ê¸ˆì§¬
 	Gotoxy(0, 0);
 	for (int j = 0; j < SCREEN_HEIGHT; j++)
 	{
@@ -439,6 +378,8 @@ void Update() {
 
 int main()
 {
+	StartTitle();
+
 	system("mode con: cols=960 lines=540");
 
 		ios_base::sync_with_stdio(false);
@@ -463,8 +404,11 @@ int main()
 	//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (15<<4)|0);
 
 	//CONSOLE_CURSOR_INFO cursorInfo = { 0, };
-	//cursorInfo.bVisible = FALSE; //Ä¿¼­ Visible TRUE(º¸ÀÓ) FALSE(¼û±è)
+	//cursorInfo.bVisible = FALSE; //ì»¤ì„œ Visible TRUE(ë³´ìž„) FALSE(ìˆ¨ê¹€)
 	//SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+
+
+
 	vector<Obj> GameObjss;
 	SetMap(&GameObjss);
 

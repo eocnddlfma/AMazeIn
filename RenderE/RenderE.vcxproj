@@ -133,6 +133,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapInitializer.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleDoubleBuffer.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="DataStructure.h" />
     <ClInclude Include="MapInitializer.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="mapData.txt" />
