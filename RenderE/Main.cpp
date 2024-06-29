@@ -391,46 +391,17 @@ int main()
 	cfi.nFont = 0;
 	cfi.dwFontSize.X = 4;                   // Width of each character in the font
 	cfi.dwFontSize.Y = 4;                  // Height
-	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-
-	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
-	InitConsoleBuffer();
-	//HWND console = GetConsoleWindow();
-	//LONG style = GetWindowLong(console, GWL_STYLE);
-
-	//style &= ~WS_MAXIMIZEBOX & ~WS_SIZEBOX;// &~WS_HSCROLL;// &~WS_CAPTION;
-	//SetWindowLong(console, GWL_STYLE, style);
-
-	//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (15<<4)|0);
-
-	//CONSOLE_CURSOR_INFO cursorInfo = { 0, };
-	//cursorInfo.bVisible = FALSE; //커서 Visible TRUE(보임) FALSE(숨김)
-	//SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-
-
-
 	vector<Obj> GameObjss;
 	SetMap(&GameObjss);
-
-//GameObjs[0] =(Obj(Vector2(2, 8), Vector2(-2, 8)));
-//GameObjs.push_back(Obj(Vector2(8, 8), Vector2(-15, 8)));
-//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(-8, 8)));
-//GameObjs.push_back(Obj(Vector2(-8, -8), Vector2(8, -8)));
-	//vector<Obj4> GameObject4(1);
-//	GameObject4[0] = Obj4(Vector2(-10,10), Vector2(10,10), Vector2(10,-10), Vector2(-10,-10));
-//
-//for (int i = 0; i < GameObject4.size(); i++)
-//{
-//	for (int j = 0; j < 4; j++)
-//	{
-//		GameObjs.push_back(GameObject4[i].lines[j]);
-//	}
-//}
-
 	for (int i = 0; i < GameObjss.size(); i++)
 	{
 		GameObjs.push_back(GameObjss[i]);
 	}
+	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
+	InitConsoleBuffer();
+
 
 	float speedOrigin = 15;
 	int fov = FOV,playerHP=5;
