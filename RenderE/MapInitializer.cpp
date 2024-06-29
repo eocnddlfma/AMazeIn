@@ -10,7 +10,7 @@ void SetMap(std::vector<Obj>* map)//맵 초기화 처리
 	while (true)
 	{
 		file >> Startx >> Starty >> Endx >> Endy >> texture;
-		map->push_back(Obj(Vector2(Startx, Starty), Vector2(Endx, Endy), texture, ObjLayer::Stru));
+		map->push_back(Obj(Vector2(Startx*4, Starty*4), Vector2(Endx*4, Endy*4), texture, ObjLayer::Stru));
 		if (file.eof())
 			break;
 	}
