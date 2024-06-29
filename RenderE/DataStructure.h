@@ -31,17 +31,12 @@ public:
 	bool able;
 	ObjLayer la = ObjLayer::Stru;
 	int textureNum=1;
-	Obj(Vector2 start1, Vector2 end1, int textureNum = 1) {
-		start = start1;
-		end = end1;
-		this->textureNum = textureNum;
-	};
 
-	Obj(Vector2 start1, Vector2 end1, ObjLayer laa, int textureNum = 1) {
+	Obj(Vector2 start1, Vector2 end1, int textureNum = 1, ObjLayer laa = ObjLayer::Stru ) {
 		start = start1;
 		end = end1;
-		la = laa;
 		this->textureNum = textureNum;
+		la = laa;
 	};
 
 

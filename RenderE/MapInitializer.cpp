@@ -2,22 +2,16 @@
 #include <fstream>
 #include <iostream>
 
-void SetMap(std::vector<Objs>* map)
+void SetMap(std::vector<Obj>* map)//맵 초기화 처리
 {
-	int leftup, rightup, rightdown, leftdown, texture;
+	int Startx, Starty, Endx, Endy, texture;
 	std::ifstream file;
 	file.open("mapData.txt");
 	while (true)
 	{
-		file >> leftup >> rightup >> rightdown >> leftdown >> texture;
-		map->push_back(Objs(
-			{ Vector2(leftup, rightup),
-			Vector2(rightup, rightdown),
-			Vector2(rightdown, leftdown),
-			Vector2(leftdown, leftup)
-			}, texture
-		));
-		if (!file.eof())
+		file >> Startx >> Starty >> Endx >> Endy >> texture;
+		map->push_back(Obj(Vector2(Startx, Starty), Vector2(Endx, Endy), texture, ObjLayer::Stru));
+		if (file.eof())
 			break;
 	}
 	file.close();

@@ -9,6 +9,7 @@
 #include "Render.h"
 #include "Core.h"
 #include "mapinitializer.h"
+#include "ConsoleDoubleBuffer.h"
 
 using namespace std;
 
@@ -360,6 +361,7 @@ void Renderer(const int fov, Vector2 player, float rot, int resol)
 		}
 		output += '\n';
 	}
+	//RenderConsole(output);
 	cout << output;
 	//output.clear();
 
@@ -399,7 +401,7 @@ int main()
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE; //Ä¿¼­ Visible TRUE(º¸ÀÓ) FALSE(¼û±è)
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-	vector<Objs> GameObjss;
+	vector<Obj> GameObjss;
 	SetMap(&GameObjss);
 	/*GameObjss.push_back(Objs({ Vector2(-12*2,-6 * 2), Vector2(12 * 2,-6 * 2), Vector2(12 * 2,12 * 2), Vector2(6 * 2,12 * 2),Vector2(6 * 2,12 * 2) ,Vector2(6 * 2,24 * 2) ,Vector2(18 * 2,24 * 2)
 		,Vector2(18 * 2,42 * 2),Vector2(-36 * 2,42 * 2) ,Vector2(-36 * 2,24 * 2),Vector2(-2,24 * 2) ,Vector2(-2,12 * 2) ,Vector2(-12 * 2,12 * 2)}));*/
@@ -423,10 +425,7 @@ int main()
 
 	for (int i = 0; i < GameObjss.size(); i++)
 	{
-		for (int j = 0; j < GameObjss[i].lines.size(); j++)
-		{
-			GameObjs.push_back(GameObjss[i].lines[j]);
-		}
+		GameObjs.push_back(GameObjss[i]);
 	}
 
 	//BillBoardss.push_back(Billboard(Vector2(3,3),2));
@@ -443,6 +442,7 @@ int main()
 	QueryPerformanceCounter(&Current);
 	QueryPerformanceFrequency(&MING);
 	last = Current;
+	InitConsoleBuffer();
 	while (true)
 	{
 		QueryPerformanceCounter(&Current);
