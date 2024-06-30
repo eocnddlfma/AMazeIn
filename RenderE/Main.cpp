@@ -193,82 +193,6 @@ int(*GetTextureByNumber(int num))[15]
 //	short height =  - + 1;
 //	return COORD{ width,height };
 //}
-void Input(Vector2* poss, float rot, float speed , Vector2* Playerpos) {
-	if (GetAsyncKeyState('W') & 0x8000)
-	{
-		poss->x += cosf(rot) * speed;
-		poss->y += sinf(rot) * speed;
-	}
-	if (GetAsyncKeyState('S') & 0x8000) {
-		poss->x += cosf(rot) * -speed;
-		poss->y += sinf(rot) * -speed;
-	}
-	if (GetAsyncKeyState('D') & 0x8000)
-	{
-		poss->x += cosf(rot + 1.7079) * speed;
-		poss->y += sinf(rot + 1.7079) * speed;
-	}
-	if (GetAsyncKeyState('A') & 0x8000) {
-		poss->x += cosf(rot + 1.7079) * -speed;
-		poss->y += sinf(rot + 1.7079) * -speed;
-	}
-
-	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
-	{
-		poss->x += cosf(rot) * speed / 2;
-		poss->y += sinf(rot) * speed / 2;
-		poss->x *= 4;
-		poss->y *= 4;
-		if (PLUSHEIGHT < 13)
-			PLUSHEIGHT += 8;
-	}
-	else
-	{
-		if (PLUSHEIGHT > 0.01f)
-		{
-			PLUSHEIGHT -= 2;
-			if (PLUSHEIGHT < 0) {
-				PLUSHEIGHT = 0;
-			}
-		}
-
-		if (poss->Distance() > 0) {
-			if (PLUSHEIGHT < 3)
-				PLUSHEIGHT += 1;
-		}
-	}
-
-	if (_kbhit())
-	{
-		char a = _getch();
-		if (a == 'f')
-		{
-			Billboard* ming = new Billboard(Playerpos, 0.4, Vector2(cosf(rot), sinf(rot)), 10, 2);
-			BillBoardss.push_back(ming);
-			MovingBillboards.push_back(ming);
-
-			for (int i = 0; i < EnemyBillboards.size(); i++) {
-				if (Raycasting(EnemyBillboards[i]->ConvertObj(rot), Obj(Vector2(Playerpos->x, Playerpos->y), Vector2(Playerpos->x + cosf(rot) * 300, Playerpos->y + sinf(rot) * 300))).able)
-				{
-					BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
-					MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
-					Billboard* ming = EnemyBillboards[i];
-					EnemyBillboards.erase(EnemyBillboards.begin() + i);
-					delete ming;
-				}
-			}
-
-		}
-		if (a == 'g')
-		{
-			Billboard* enemy = new Billboard(Vector2(Playerpos->x + 10, Playerpos->y + 10), 2, Vector2(), 0.6, 1);
-			BillBoardss.push_back(enemy);
-			MovingBillboards.push_back(enemy);
-			EnemyBillboards.push_back(enemy);
-		}
-	}
-
-}
 
 void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 {
@@ -448,58 +372,8 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 	delete horizontal;
 }
 
-void Update(Vector2* Playerpos, Vector2* poss, int* playerHP, float rot) {
-	for (int i = 0; i < MovingBillboards.size(); i++) {
-		MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
-		MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
+void Update() {
 
-	}
-
-	for (int i = 0; i < EnemyBillboards.size(); i++) {
-		EnemyBillboards[i]->dir = Vector2(Playerpos->x - EnemyBillboards[i]->pos.x, Playerpos->y - EnemyBillboards[i]->pos.y).Normalized();
-		if (VDistace(EnemyBillboards[i]->pos, *Playerpos) < 0.8)
-		{
-			*playerHP--;
-
-			BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
-			MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
-			Billboard* ming = EnemyBillboards[i];
-			EnemyBillboards.erase(EnemyBillboards.begin() + i);
-			delete ming;
-		}
-	}
-
-	if (poss->x != 0 || poss->y != 0)
-	{
-		bool able = true;
-		for (int i = 0; i < GameObjs.size(); i++)
-		{
-			if (Raycasting(GameObjs[i], Obj(Playerpos, Vector2(Playerpos->x + poss->x * 2, Playerpos->y + poss->y * 2))).able)
-			{
-				able = false;
-				break;
-			}
-		}
-		for (int i = 0; i < BillBoardss.size(); i++)
-		{
-			Obj Billbod = BillBoardss[i]->ConvertObj(rot);
-			if (Raycasting(Billbod, Obj(Playerpos, Vector2(Playerpos->x + poss->x * 2, Playerpos->y + poss->y * 2))).able)
-			{
-				able = false;
-				break;
-			}
-		}
-
-		if (able)
-		{
-			Playerpos->x += poss->x;
-			Playerpos->y += poss->y;
-		}
-		else
-		{
-
-		}
-	}
 }
 
 int main()
@@ -557,10 +431,131 @@ int main()
 			rot = 2 * 3.141591;
 		}
 
-		Input(&poss, rot, speed, &Playerpos);
-		Update(&Playerpos, &poss, &playerHP, rot);
 		Renderer(fov, Playerpos, rot, resol,playerHP);
-		
+		if (GetAsyncKeyState('W') & 0x8000)
+		{
+			poss.x += cosf(rot) * speed;
+			poss.y += sinf(rot) * speed;
+		}
+		if (GetAsyncKeyState('S') & 0x8000) {
+			poss.x += cosf(rot) * -speed;
+			poss.y += sinf(rot) * -speed;
+		}
+		if (GetAsyncKeyState('D') & 0x8000)
+		{
+			poss.x += cosf(rot + 1.7079) * speed;
+			poss.y += sinf(rot + 1.7079) * speed;
+		}
+		if (GetAsyncKeyState('A') & 0x8000) {
+			poss.x += cosf(rot + 1.7079) * -speed;
+			poss.y += sinf(rot + 1.7079) * -speed;
+		}
+
+		if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+		{
+			poss.x += cosf(rot) * speed / 2;
+			poss.y += sinf(rot) * speed / 2;
+			poss.x *= 4;
+			poss.y *= 4;
+			if (PLUSHEIGHT < 13)
+				PLUSHEIGHT += 8;
+		}
+		else
+		{
+			if (PLUSHEIGHT > 0.01f)
+			{
+				PLUSHEIGHT -= 2;
+				if (PLUSHEIGHT < 0) {
+					PLUSHEIGHT = 0;
+				}
+			}
+
+			if (poss.Distance() > 0) {
+				if (PLUSHEIGHT < 3)
+					PLUSHEIGHT += 1;
+			}
+		}
+		if (_kbhit())
+		{
+			char a = _getch();
+			if (a == 'f')
+			{
+				Billboard* ming = new Billboard(Playerpos, 0.4, Vector2(cosf(rot), sinf(rot)), 10,2);
+				BillBoardss.push_back(ming);
+				MovingBillboards.push_back(ming);
+
+				for (int i = 0; i < EnemyBillboards.size(); i++) {
+					if (Raycasting(EnemyBillboards[i]->ConvertObj(rot), Obj(Vector2(Playerpos.x, Playerpos.y), Vector2(Playerpos.x + cosf(rot) * 300, Playerpos.y + sinf(rot) * 300))).able) 
+					{
+						BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
+						MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
+						Billboard* ming = EnemyBillboards[i];
+						EnemyBillboards.erase(EnemyBillboards.begin() + i);
+						delete ming;
+					}
+				}
+
+			}
+			if (a == 'g')
+			{
+				Billboard* enemy = new Billboard(Vector2(Playerpos.x + 10,Playerpos.y+10), 2, Vector2(),0.6, 1);
+				BillBoardss.push_back(enemy);
+				MovingBillboards.push_back(enemy);
+				EnemyBillboards.push_back(enemy);
+			}
+		}
+
+		for (int i = 0; i < MovingBillboards.size(); i++) {
+			MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
+			MovingBillboards[i]->pos.y += MovingBillboards[i]->dir.y * MovingBillboards[i]->speed;
+
+		}
+
+		for (int i = 0; i < EnemyBillboards.size(); i++) {
+			EnemyBillboards[i]->dir = Vector2(Playerpos.x - EnemyBillboards[i]->pos.x, Playerpos.y - EnemyBillboards[i]->pos.y).Normalized();
+			if (VDistace(EnemyBillboards[i]->pos, Playerpos) < 0.8)
+			{
+				playerHP--;
+				
+				BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
+				MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
+				Billboard* ming = EnemyBillboards[i];
+				EnemyBillboards.erase(EnemyBillboards.begin() + i);
+				delete ming;
+			}
+		}
+
+		if (poss.x != 0 || poss.y != 0)
+		{
+			bool able = true;
+			for (int i = 0; i < GameObjs.size(); i++)
+			{
+				if (Raycasting(GameObjs[i], Obj(Playerpos, Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2))).able)
+				{
+					able = false;
+					break;
+				}
+			}
+			for (int i = 0; i < BillBoardss.size(); i++)
+			{
+				Obj Billbod = BillBoardss[i]->ConvertObj(rot);
+				if (Raycasting(Billbod, Obj(Playerpos, Vector2(Playerpos.x + poss.x * 2, Playerpos.y + poss.y * 2))).able)
+				{
+					able = false;
+					break;
+				}
+			}
+
+			if (able)
+			{
+				Playerpos.x += poss.x;
+				Playerpos.y += poss.y;
+			}
+			else
+			{
+
+			}
+		}
 		POINT p;
 		if (GetCursorPos(&p))
 		{
