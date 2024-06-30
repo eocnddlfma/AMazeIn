@@ -214,9 +214,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 			horizontalTextureNum = 0;
 		}
 	}
-	//CONSOLE_SCREEN_BUFFER_INFO info;
-	//GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE)
-		//, &info);
 
 
 	vector<string> output2(SCREEN_HEIGHT);
@@ -247,57 +244,36 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 	{
 		for (int z = 0; z < fov * 2; z++)
 		{
-
-			//output[j].push_back(' ');
-			//output[j][ii + fov]='#';
-			//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
 			if (output2[ii][z] == ' ')
 			{
 				if (ii >= horizontal[1][z] / 2 && ii <= SCREEN_HEIGHT - horizontal[1][z] / 2)
 				{
-					//float size = ((int)horizontal[1][z] / 2 - (75 - (int)horizontal[1][z] / 2));
-
-					if (ii >= horizontal[1][z] / 2 && ii <= SCREEN_HEIGHT - horizontal[1][z] / 2)
+					if (horizontaltx[1][z] < 0)
 					{
-						//float size = ((int)horizontal[1][z] / 2 - (75 - (int)horizontal[1][z] / 2));
-
-
-
-						if (horizontaltx[1][z] < 0)
-						{
-							outputColor[ii][z] = 0;
-						}
-						else if (SCREEN_HEIGHT > horizontal[1][z] / 2)
-						{
+						outputColor[ii][z] = 0;
+					}
+					else if (SCREEN_HEIGHT > horizontal[1][z] / 2)
+					{
 							
-							outputColor[ii][z] = BillTXS[horizontaltxType[z]][(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (SCREEN_HEIGHT - horizontal[1][z] / 2)) * 14)];
+						outputColor[ii][z] = BillTXS[horizontaltxType[z]][(int)(horizontaltx[1][z] * 14)][(int)(((ii-horizontal[1][z]/2) / (SCREEN_HEIGHT - horizontal[1][z] / 2)) * 14)];
 
-						}
-
-						if (outputColor[ii][z] == 0)
-						{
-							output2[ii][z] = ' ';
-							continue;
-						}
-
-						if ((int)(horizontal[1][z] / 5 / 2) < 7) {
-
-							output2[ii][z] = Pixels[(int)(horizontal[1][z] / 2 / 10)];
-						}
-						else
-						{
-							output2[ii][z] = Pixels[6];
-						}
-						//output2[ii].insert(ii, reset);
-				//if (las[ii] == ObjLayer::Bill)
-				//{
-				//	output += reset;
-				//}
 					}
 
+					if (outputColor[ii][z] == 0)
+					{
+						output2[ii][z] = ' ';
+						continue;
+					}
 
+					if ((int)(horizontal[1][z] / 5 / 2) < 7) {
+
+						output2[ii][z] = Pixels[(int)(horizontal[1][z] / 2 / 10)];
+					}
+					else
+					{
+						output2[ii][z] = Pixels[6];
+					}
 				}
-				//output += '\n';
 			}
 		}
 	}
@@ -307,26 +283,15 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 	{
 		for (int z = 0; z < fov * 2; z++)
 		{
-
-			//output[j].push_back(' ');
-			//output[j][ii + fov]='#';
-			//output[ii,48 - j] = '0' + ((int)horizontal[ii] < 9 ? (int)horizontal[ii] : 9);
 			if (output2[j][z] == ' ')
 			{
 				if (j >= horizontal[0][z] / 2 && j <= SCREEN_HEIGHT - horizontal[0][z] / 2)
 				{
-					//if (las[ii] == ObjLayer::Bill)
-					//{
-					//	output += red;
-					//}
-
-					//float size = ((int)horizontal[z] / 2 - (75 - (int)horizontal[z] / 2));
 
 					if (SCREEN_HEIGHT - horizontal[0][j] / 2 > 0)
 						outputColor[j][z] = ming[(int)(horizontaltx[0][z] * 14)][(int)fabs((j - horizontal[0][z] / 2) / ((SCREEN_HEIGHT - horizontal[0][z])) * 14)];
 					else
 						outputColor[j][z] = 0;
-					//output2[ii].insert(ii,colors[ming[(int)(horizontaltx[0][ii] * 14)][(int)fabs((j - horizontal[0][ii]/2) / ((75 - horizontal[0][ii]/2 * 2)) * 14)]]);//(int)((55 - j)/15*horizontaltx[ii])
 
 					if ((int)(horizontal[0][z] / 10) < 7) {
 
@@ -336,11 +301,6 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 					{
 						output2[j][z] = Pixels[6];
 					}
-					//output += reset;
-					//if (las[ii] == ObjLayer::Bill)
-					//{
-					//	output += reset;
-					//}
 				}
 				else
 				{
