@@ -372,6 +372,75 @@ void Renderer(const int fov, Vector2 player, float rot, int resol, int playerhp)
 	delete horizontal;
 }
 
+void Input(Vector2* poss, Vector2* Playerpos, float rot, float speed) {
+	if (GetAsyncKeyState('W') & 0x8000)
+	{
+		poss->x += cosf(rot) * speed;
+		poss->y += sinf(rot) * speed;
+	}
+	if (GetAsyncKeyState('S') & 0x8000) {
+		poss->x += cosf(rot) * -speed;
+		poss->y += sinf(rot) * -speed;
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		poss->x += cosf(rot + 1.7079) * speed;
+		poss->y += sinf(rot + 1.7079) * speed;
+	}
+	if (GetAsyncKeyState('A') & 0x8000) {
+		poss->x += cosf(rot + 1.7079) * -speed;
+		poss->y += sinf(rot + 1.7079) * -speed;
+	}
+
+	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+	{
+		poss->x += cosf(rot) * speed / 2;
+		poss->y += sinf(rot) * speed / 2;
+		poss->x *= 4;
+		poss->y *= 4;
+		if (PLUSHEIGHT < 13)
+			PLUSHEIGHT += 8;
+	}
+	else
+	{
+		if (PLUSHEIGHT > 0.01f)
+		{
+			PLUSHEIGHT -= 2;
+			if (PLUSHEIGHT < 0) {
+				PLUSHEIGHT = 0;
+			}
+		}
+
+		if (poss->Distance() > 0) {
+			if (PLUSHEIGHT < 3)
+				PLUSHEIGHT += 1;
+		}
+	}
+	if (_kbhit())
+	{
+		char a = _getch();
+		if (a == 'f')
+		{
+			Vector2 v = (*Playerpos);
+			Billboard* ming = new Billboard(v, 0.4f, Vector2(cosf(rot), sinf(rot)), 10.0f, 2);
+			BillBoardss.push_back(ming);
+			MovingBillboards.push_back(ming);
+
+			for (int i = 0; i < EnemyBillboards.size(); i++) {
+				if (Raycasting(EnemyBillboards[i]->ConvertObj(rot), Obj(Vector2(Playerpos->x, Playerpos->y), Vector2(Playerpos->x + cosf(rot) * 300, Playerpos->y + sinf(rot) * 300))).able)
+				{
+					BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
+					MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
+					Billboard* ming = EnemyBillboards[i];
+					EnemyBillboards.erase(EnemyBillboards.begin() + i);
+					delete ming;
+				}
+			}
+
+		}
+	}
+}
+
 void Update() {
 
 }
@@ -415,8 +484,26 @@ int main()
 	QueryPerformanceFrequency(&MING);
 	last = Current;
 	InitConsoleBuffer();
+	bool beforeSpawn = true;
 	while (true)
 	{
+		if (Playerpos.y > 305*2) {
+			GameClearTitle();
+		}
+		if (Playerpos.y > 150 * 2 && beforeSpawn)
+		{
+			beforeSpawn = false;
+			srand((unsigned int)time(NULL));
+			for (int i = 0; i < 20 ;i++) 
+			{
+				int x = rand() % 100 - 50;
+				int y = rand() % 100 - 50;
+				Billboard* enemy = new Billboard(Vector2(Playerpos.x + x, Playerpos.y + y), 2, Vector2(), 0.5, 1);
+				BillBoardss.push_back(enemy);
+				MovingBillboards.push_back(enemy);
+				EnemyBillboards.push_back(enemy);
+			}
+		}
 		QueryPerformanceCounter(&Current);
 		deltaTime = (float)(Current.QuadPart - last.QuadPart) / static_cast<float>(MING.QuadPart);
 		last = Current;
@@ -432,78 +519,7 @@ int main()
 		}
 
 		Renderer(fov, Playerpos, rot, resol,playerHP);
-		if (GetAsyncKeyState('W') & 0x8000)
-		{
-			poss.x += cosf(rot) * speed;
-			poss.y += sinf(rot) * speed;
-		}
-		if (GetAsyncKeyState('S') & 0x8000) {
-			poss.x += cosf(rot) * -speed;
-			poss.y += sinf(rot) * -speed;
-		}
-		if (GetAsyncKeyState('D') & 0x8000)
-		{
-			poss.x += cosf(rot + 1.7079) * speed;
-			poss.y += sinf(rot + 1.7079) * speed;
-		}
-		if (GetAsyncKeyState('A') & 0x8000) {
-			poss.x += cosf(rot + 1.7079) * -speed;
-			poss.y += sinf(rot + 1.7079) * -speed;
-		}
-
-		if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
-		{
-			poss.x += cosf(rot) * speed / 2;
-			poss.y += sinf(rot) * speed / 2;
-			poss.x *= 4;
-			poss.y *= 4;
-			if (PLUSHEIGHT < 13)
-				PLUSHEIGHT += 8;
-		}
-		else
-		{
-			if (PLUSHEIGHT > 0.01f)
-			{
-				PLUSHEIGHT -= 2;
-				if (PLUSHEIGHT < 0) {
-					PLUSHEIGHT = 0;
-				}
-			}
-
-			if (poss.Distance() > 0) {
-				if (PLUSHEIGHT < 3)
-					PLUSHEIGHT += 1;
-			}
-		}
-		if (_kbhit())
-		{
-			char a = _getch();
-			if (a == 'f')
-			{
-				Billboard* ming = new Billboard(Playerpos, 0.4, Vector2(cosf(rot), sinf(rot)), 10,2);
-				BillBoardss.push_back(ming);
-				MovingBillboards.push_back(ming);
-
-				for (int i = 0; i < EnemyBillboards.size(); i++) {
-					if (Raycasting(EnemyBillboards[i]->ConvertObj(rot), Obj(Vector2(Playerpos.x, Playerpos.y), Vector2(Playerpos.x + cosf(rot) * 300, Playerpos.y + sinf(rot) * 300))).able) 
-					{
-						BillBoardss.erase(find(BillBoardss.begin(), BillBoardss.end(), EnemyBillboards[i]));
-						MovingBillboards.erase(find(MovingBillboards.begin(), MovingBillboards.end(), EnemyBillboards[i]));
-						Billboard* ming = EnemyBillboards[i];
-						EnemyBillboards.erase(EnemyBillboards.begin() + i);
-						delete ming;
-					}
-				}
-
-			}
-			if (a == 'g')
-			{
-				Billboard* enemy = new Billboard(Vector2(Playerpos.x + 10,Playerpos.y+10), 2, Vector2(),0.6, 1);
-				BillBoardss.push_back(enemy);
-				MovingBillboards.push_back(enemy);
-				EnemyBillboards.push_back(enemy);
-			}
-		}
+		Input(&poss, &Playerpos, rot, speed);
 
 		for (int i = 0; i < MovingBillboards.size(); i++) {
 			MovingBillboards[i]->pos.x += MovingBillboards[i]->dir.x * MovingBillboards[i]->speed;
@@ -524,7 +540,9 @@ int main()
 				delete ming;
 			}
 		}
-
+		if (playerHP < 1) {
+			GameOverTitle();
+		}
 		if (poss.x != 0 || poss.y != 0)
 		{
 			bool able = true;

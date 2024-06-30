@@ -78,6 +78,17 @@ void RenderConsole(std::string s)
 	FlipConsoleBuffer();
 }
 
+void SetFontSizeBig()
+{
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = 20;                   // Width of each character in the font
+	cfi.dwFontSize.Y = 50;                  // Height
+	SetCurrentConsoleFontEx(g_hScreen[0], FALSE, &cfi);
+	SetCurrentConsoleFontEx(g_hScreen[1], FALSE, &cfi);
+}
+
 void ReleaseConsoleBuffer()
 {
 	CloseHandle(g_hScreen[0]);

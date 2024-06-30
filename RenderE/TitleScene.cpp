@@ -5,8 +5,14 @@ void StartTitle()
 	std::cout << "A Maze In" << std::endl;
 	std::cout << "" << std::endl;
 	std::cout << "By sinsanghyeon and baesunghyeon" << std::endl;
-	std::cout << "" << std::endl; 
-	std::cout << "Press Any Key to Start" << std::endl; 
+	std::cout << "" << std::endl;
+	std::cout << "Press Any Key to Start" << std::endl;
+	std::cout << "" << std::endl;
+	std::cout << "Press WASD to Move" << std::endl;
+	std::cout << "Press Shift to Dash/Slide" << std::endl;
+	std::cout << "Press F to Shoot Bullets" << std::endl;
+	std::cout << "" << std::endl;
+	std::cout << "Have Fun!" << std::endl;
 
 	while (true)if (_getch())break;
 	Sleep(100);
@@ -57,4 +63,60 @@ void StartTitle()
 	while (true)if (_getch())break;
 	Sleep(10);
 	system("cls");
+}
+
+void GameOverTitle()
+{
+	SetFontSizeBig();
+	int y = 0;
+	RenderConsole("몸이 차갑다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("갑작스럽게 날아오는 괴물들에게 너무 많이 맞은 것 같다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("형... 보고 싶었는데...\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("2002.04.24 김경찰 녹음일지 2\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("GAMEOVER\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	exit(404);
+}
+
+void GameClearTitle()
+{
+	SetFontSizeBig();
+	int y = 0;
+	RenderConsole("중간에 이상한 괴물들이 있긴 했지만\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("일단 다 죽인 것 같다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("총알은 거의 다 써가는데, 미로는 끝이 없어보인다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("하... 역시 살아돌아가긴 힘들겠다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("GPS도 잡히지 않지만... 구조요청이라도 시도해봐야지.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("일단 안으로 좀 더 들어가 봐야 겠다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("2002.04.24 김경찰 녹음일지 2\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("클리어 입니다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	RenderConsole("플레이해주셔서 감사합니다.\n");
+	while (true)if (_getch())break;
+	Sleep(10);
+	exit(200);
 }
